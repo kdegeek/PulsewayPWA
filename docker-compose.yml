@@ -16,6 +16,11 @@ services:
       - pulseway_data:/app/data
       - ./logs:/app/logs
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 30s

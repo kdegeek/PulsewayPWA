@@ -1,6 +1,7 @@
 # app/main.py
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
 from contextlib import asynccontextmanager
 import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -12,6 +13,7 @@ from .services.data_sync import DataSyncService
 from .api import devices, scripts, monitoring
 from .pulseway.client import PulsewayClient
 import os
+from typing import Optional # This is a duplicate import, but it's fine.
 import logging
 
 # Configure logging
@@ -20,6 +22,16 @@ logger = logging.getLogger(__name__)
 
 # Global scheduler
 scheduler = AsyncIOScheduler()
+
+# API Key Verification
+async def verify_api_key(x_api_key: Optional[str] = Header(None, alias="X-API-Key")):
+    expected_api_key = os.getenv("API_KEY")
+    if expected_api_key is None:
+        expected_api_key = "your-secret-key-here"  # Fallback as per original snippet
+
+    if x_api_key != expected_api_key:
+        raise HTTPException(status_code=401, detail="Invalid or missing API key")
+    return x_api_key
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -74,14 +86,15 @@ app = FastAPI(
     title="Pulseway Backend API",
     description="Robust backend for interfacing with Pulseway instances",
     version="1.0.0-alpha.1",
-    lifespan=lifespan
+    lifespan=lifespan,
+    dependencies=[Depends(verify_api_key)]
 )
 
 # Add CORS middleware for future PWA
 app.add_middleware(
     CORSMiddleware,
     # TODO: Restrict allow_origins for production environments.
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=["http://localhost:3000", "http://localhost:8000"],  # Configure appropriately for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
