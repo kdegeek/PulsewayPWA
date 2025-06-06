@@ -6,193 +6,36 @@
     <title>Scripts - Pulseway Dashboard</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0a0a0a">
+    <link rel="stylesheet" href="/css/main.css">
     
     <style>
-        :root {
-            --primary-glow: #00f5ff;
-            --secondary-glow: #ff00ff;
-            --success-glow: #00ff88;
-            --warning-glow: #ff8800;
-            --error-glow: #ff0055;
-            --bg-primary: #0a0a0a;
-            --bg-glass: rgba(15, 15, 25, 0.8);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --border-glow: rgba(255, 255, 255, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-primary);
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.3) 0%, transparent 50%);
-            color: var(--text-primary);
-            min-height: 100vh;
-        }
-
-        .glass {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .glass:hover {
-            box-shadow: 0 12px 40px rgba(0, 245, 255, 0.1);
-            border: 1px solid rgba(0, 245, 255, 0.2);
-        }
-
-        .glow-text {
-            text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(10, 10, 20, 0.9);
-            backdrop-filter: blur(20px);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .nav-button {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-button:hover, .nav-button.active {
-            background: rgba(0, 245, 255, 0.1);
-            color: var(--primary-glow);
-        }
-
-        .logo {
-            color: var(--primary-glow);
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        /* Main Content */
-        .main-content {
-            padding: 2rem;
+        /* Page-specific styles for scripts-page.html */
+        .main-content { /* Keep max-width here as it's specific */
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
+        /* .page-header, .page-title, .action-button are in main.css */
 
-        .page-title {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-glow);
-        }
-
-        .action-button {
-            background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
-            border: none;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .action-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 245, 255, 0.4);
-        }
-
-        .action-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Layout */
+        /* Layout specific to scripts page */
         .content-layout {
             display: grid;
             grid-template-columns: 1fr 400px;
             gap: 2rem;
         }
 
-        /* Script List */
-        .script-filters {
+        /* Script List specific styles */
+        /* .filter-group, .filter-label, .filter-input, .filter-select are in main.css */
+        .script-filters { /* Specific padding and layout for this page's filters */
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr; /* Specific grid setup */
             gap: 1rem;
             align-items: end;
         }
 
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .filter-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .filter-input, .filter-select {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            padding: 0.75rem;
-            color: var(--text-primary);
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-        }
-
-        .filter-input:focus, .filter-select:focus {
-            outline: none;
-            border-color: var(--primary-glow);
-            box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
-        }
-
-        .script-list {
+        .script-list { /* Specific to scripts list */
             max-height: 600px;
             overflow-y: auto;
         }
@@ -413,72 +256,9 @@
             border: 1px solid var(--error-glow);
         }
 
-        /* Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(20px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 2rem;
-        }
+        /* Modal styles (.modal, .modal-content etc.) are in main.css */
 
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-glass);
-            backdrop-filter: blur(30px);
-            border: 1px solid var(--border-glow);
-            border-radius: 20px;
-            max-width: 800px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            padding: 2rem 2rem 1rem;
-            border-bottom: 1px solid var(--border-glow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-glow);
-        }
-
-        .close-button {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .close-button:hover {
-            background: rgba(255, 0, 85, 0.2);
-            color: var(--error-glow);
-        }
-
-        .modal-body {
-            padding: 2rem;
-        }
-
-        .code-block {
+        .code-block { /* Specific to script details modal */
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-glow);
             border-radius: 8px;
@@ -490,37 +270,11 @@
             color: var(--text-primary);
         }
 
-        /* Loading and Empty States */
-        .loading, .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem;
-            color: var(--text-secondary);
-        }
+        /* Loading and Empty States (.loading, .spinner, @keyframes spin) are in main.css */
+        /* @keyframes pulse is in main.css */
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(0, 245, 255, 0.3);
-            border-top: 3px solid var(--primary-glow);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Responsive */
+        /* Responsive Design specific to scripts-page.html */
+        /* General .main-content, .page-header responsive rules are in main.css */
         @media (max-width: 1024px) {
             .content-layout {
                 grid-template-columns: 1fr;
@@ -528,23 +282,13 @@
             
             .execution-panel {
                 position: static;
-                order: -1;
+                order: -1; /* This is a good specific rule */
             }
         }
 
         @media (max-width: 768px) {
-            .main-content {
-                padding: 1rem;
-            }
-            
-            .script-filters {
+            .script-filters { /* Specific filter responsive behavior */
                 grid-template-columns: 1fr;
-            }
-            
-            .page-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: stretch;
             }
         }
     </style>
@@ -672,31 +416,19 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadScripts();
             loadDevices();
-            setupWebSocket();
+            // Call the global setupWebSocket function from app.js
+            setupWebSocket(
+                ['script_executions', 'device_updates'], // subscribeEvents
+                { // messageHandlers
+                    'SCRIPT_EXECUTION_UPDATE': () => loadExecutionHistory()
+                    // Add other handlers if device_updates needs specific logic on this page
+                }
+            );
             setupEventListeners();
             loadExecutionHistory();
         });
 
-        // Setup WebSocket for real-time updates
-        function setupWebSocket() {
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
-            
-            ws.onopen = function() {
-                console.log('WebSocket connected');
-                ws.send(JSON.stringify({
-                    type: 'SUBSCRIBE',
-                    events: ['script_executions', 'device_updates']
-                }));
-            };
-            
-            ws.onmessage = function(event) {
-                const data = JSON.parse(event.data);
-                if (data.type === 'SCRIPT_EXECUTION_UPDATE') {
-                    loadExecutionHistory();
-                }
-            };
-        }
+        // setupWebSocket is now in app.js
 
         // Setup event listeners
         function setupEventListeners() {
@@ -975,11 +707,7 @@
             // For now, showing mock data
             const historyContainer = document.getElementById('executionHistory');
             
-            const mockHistory = [
-                { device: 'SRV-WEB-01', time: '2 minutes ago', status: 'running' },
-                { device: 'WS-ADMIN-15', time: '5 minutes ago', status: 'success' },
-                { device: 'SRV-DB-02', time: '12 minutes ago', status: 'failed' },
-            ];
+            const mockHistory = []; // Initialize with an empty array
             
             if (mockHistory.length === 0) {
                 historyContainer.innerHTML = '<div class="empty-state"><span>No recent executions</span></div>';
@@ -1182,27 +910,11 @@
         }
 
         // Utility functions
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        function showSuccess(message) {
-            console.log('Success:', message);
-            // TODO: Implement toast notification
-        }
-
-        function showError(message) {
-            console.error('Error:', message);
-            // TODO: Implement toast notification
-        }
+        // debounce is now in utils.js
+        // showSuccess is now in utils.js
+        // showError is now in utils.js
     </script>
+    <script src="/js/utils.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 </html>

@@ -176,7 +176,7 @@
   "related_applications": [
     {
       "platform": "webapp",
-      "url": "https://github.com/yourusername/pulseway-dashboard"
+      "url": "https://example.com/your-actual-repo-link-here"
     }
   ],
   "prefer_related_applications": false

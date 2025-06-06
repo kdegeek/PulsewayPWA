@@ -6,196 +6,41 @@
     <title>Settings - Pulseway Dashboard</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0a0a0a">
+    <link rel="stylesheet" href="/css/main.css">
     
     <style>
-        :root {
-            --primary-glow: #00f5ff;
-            --secondary-glow: #ff00ff;
-            --success-glow: #00ff88;
-            --warning-glow: #ff8800;
-            --error-glow: #ff0055;
-            --bg-primary: #0a0a0a;
-            --bg-glass: rgba(15, 15, 25, 0.8);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --border-glow: rgba(255, 255, 255, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-primary);
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.3) 0%, transparent 50%);
-            color: var(--text-primary);
-            min-height: 100vh;
-        }
-
-        .glass {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .glass:hover {
-            box-shadow: 0 12px 40px rgba(0, 245, 255, 0.1);
-            border: 1px solid rgba(0, 245, 255, 0.2);
-        }
-
-        .glow-text {
-            text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(10, 10, 20, 0.9);
-            backdrop-filter: blur(20px);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .nav-button {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-button:hover, .nav-button.active {
-            background: rgba(0, 245, 255, 0.1);
-            color: var(--primary-glow);
-        }
-
-        .logo {
-            color: var(--primary-glow);
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        /* Main Content */
-        .main-content {
-            padding: 2rem;
+        /* Page-specific styles for settings-page.html */
+        .main-content { /* Keep max-width here as it's specific */
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
+        /* .page-header, .page-title, .action-button are in main.css */
+        /* .nav-link styles are in main.css and cover .settings-nav .nav-link styling */
 
-        .page-title {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-glow);
-        }
-
-        .action-button {
-            background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
-            border: none;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .action-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 245, 255, 0.4);
-        }
-
-        .action-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .action-button.success {
-            background: linear-gradient(45deg, var(--success-glow), #00cc66);
-        }
-
-        .action-button.success:hover {
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
-        }
-
-        /* Settings Layout */
+        /* Settings Layout specific to settings page */
         .settings-layout {
             display: grid;
             grid-template-columns: 250px 1fr;
             gap: 2rem;
         }
 
-        .settings-nav {
+        .settings-nav { /* Specific positioning */
             position: sticky;
-            top: calc(80px + 2rem);
+            top: calc(80px + 2rem); /* Assuming header height is approx 60px + main-content padding */
             height: fit-content;
         }
 
-        .nav-list {
+        .nav-list { /* Specific list styling */
             list-style: none;
-            padding: 1rem;
+            padding: 1rem; /* Padding within the glass container */
         }
 
-        .nav-item {
+        .nav-item { /* Spacing for nav items */
             margin-bottom: 0.5rem;
         }
 
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background: rgba(0, 245, 255, 0.1);
-            color: var(--primary-glow);
-            border-color: rgba(0, 245, 255, 0.3);
-        }
-
-        .settings-content {
+        .settings-content { /* Controls visibility of sections */
             display: none;
         }
 
@@ -453,52 +298,40 @@
             color: var(--error-glow);
         }
 
-        /* Responsive */
+        /* @keyframes pulse is in main.css */
+
+        /* Responsive Design specific to settings-page.html */
+        /* General .main-content, .page-header responsive rules are in main.css */
         @media (max-width: 1024px) {
             .settings-layout {
                 grid-template-columns: 1fr;
             }
             
-            .settings-nav {
+            .settings-nav { /* Adjust nav for stacked layout */
                 position: static;
                 order: -1;
             }
             
-            .nav-list {
+            .nav-list { /* Horizontal list for stacked layout */
                 display: flex;
                 flex-wrap: wrap;
                 gap: 0.5rem;
             }
             
             .nav-item {
-                margin-bottom: 0;
+                margin-bottom: 0; /* Remove bottom margin for horizontal list */
             }
         }
 
         @media (max-width: 768px) {
-            .main-content {
-                padding: 1rem;
-            }
-            
-            .page-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: stretch;
-            }
-            
-            .status-grid {
+            .status-grid { /* Specific grid layout for status cards */
                 grid-template-columns: 1fr;
             }
             
-            .form-group.inline {
+            .form-group.inline { /* Stack inline form groups */
                 flex-direction: column;
                 align-items: stretch;
             }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
         }
     </style>
 </head>
@@ -646,32 +479,23 @@
                         <div class="section-header">
                             <div>
                                 <h2 class="section-title">🔗 Pulseway API Configuration</h2>
-                                <p class="section-description">Configure connection to Pulseway API services</p>
+                                <p class="section-description">Review Pulseway API connection status. Configuration must be done server-side.</p>
                             </div>
                             <button class="action-button" onclick="testConnection()">🔍 Test Connection</button>
                         </div>
 
+                        <div class="alert alert-warning">
+                            ⚠️ **Security Notice:** API credentials (Token ID and Secret) must be configured securely on the server-side. Do not enter or store them in the client-side application.
+                        </div>
                         <div class="alert alert-info">
-                            ℹ️ These settings require administrator privileges and application restart to take effect.
+                            ℹ️ API Base URL and other connection parameters below are for display and testing. Changes here might not reflect actual server configuration if managed elsewhere.
                         </div>
 
                         <div class="form-grid">
                             <div class="form-group">
                                 <label class="form-label">API Base URL</label>
                                 <input type="url" class="form-input" value="https://api.pulseway.com/v3/" placeholder="https://api.pulseway.com/v3/">
-                                <p class="form-description">Base URL for Pulseway API endpoint</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Token ID</label>
-                                <input type="text" class="form-input" placeholder="Enter your Pulseway Token ID">
-                                <p class="form-description">Your Pulseway API Token ID</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Token Secret</label>
-                                <input type="password" class="form-input" placeholder="Enter your Pulseway Token Secret">
-                                <p class="form-description">Your Pulseway API Token Secret (keep secure)</p>
+                                <p class="form-description">Base URL for Pulseway API endpoint (server configured)</p>
                             </div>
 
                             <div class="form-group">
@@ -826,15 +650,19 @@
                         <div class="section-header">
                             <div>
                                 <h2 class="section-title">🔒 Security Settings</h2>
-                                <p class="section-description">Configure security and access control settings</p>
+                                <p class="section-description">Configure security and access control settings. Some settings must be managed at the server or infrastructure level.</p>
                             </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            ℹ️ IP address filtering should be configured at your server/firewall level, not within this application.
                         </div>
 
                         <div class="form-grid">
                             <div class="form-group inline">
                                 <div>
                                     <label class="form-label">Require HTTPS</label>
-                                    <p class="form-description">Force HTTPS for all connections</p>
+                                    <p class="form-description">Force HTTPS for all connections (server-side configuration)</p>
                                 </div>
                                 <div class="toggle-switch active" onclick="toggleSetting(this)">
                                     <div class="toggle-slider"></div>
@@ -844,7 +672,7 @@
                             <div class="form-group inline">
                                 <div>
                                     <label class="form-label">Session Timeout</label>
-                                    <p class="form-description">Auto-logout after inactivity</p>
+                                    <p class="form-description">Auto-logout after inactivity (client-side preference)</p>
                                 </div>
                                 <div class="toggle-switch" onclick="toggleSetting(this)">
                                     <div class="toggle-slider"></div>
@@ -854,13 +682,7 @@
                             <div class="form-group">
                                 <label class="form-label">Session Timeout Duration (hours)</label>
                                 <input type="number" class="form-input" value="8" min="1" max="24">
-                                <p class="form-description">Hours of inactivity before automatic logout</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Allowed IP Ranges</label>
-                                <textarea class="form-textarea" placeholder="192.168.1.0/24&#10;10.0.0.0/8&#10;172.16.0.0/12"></textarea>
-                                <p class="form-description">IP ranges allowed to access the dashboard (one per line)</p>
+                                <p class="form-description">Hours of inactivity before automatic logout (client-side preference)</p>
                             </div>
 
                             <div class="form-group inline">
@@ -913,31 +735,7 @@
                         <div style="margin-top: 2rem;">
                             <h3 style="color: var(--primary-glow); margin-bottom: 1rem;">📋 System Logs</h3>
                             <div class="log-viewer" id="systemLogs">
-                                <div class="log-entry">
-                                    <span class="log-timestamp">[2025-01-15 10:30:45]</span>
-                                    <span class="log-level-info">[INFO]</span>
-                                    Application started successfully
-                                </div>
-                                <div class="log-entry">
-                                    <span class="log-timestamp">[2025-01-15 10:30:46]</span>
-                                    <span class="log-level-success">[SUCCESS]</span>
-                                    Pulseway API connection established
-                                </div>
-                                <div class="log-entry">
-                                    <span class="log-timestamp">[2025-01-15 10:30:47]</span>
-                                    <span class="log-level-info">[INFO]</span>
-                                    Background sync task started
-                                </div>
-                                <div class="log-entry">
-                                    <span class="log-timestamp">[2025-01-15 10:31:15]</span>
-                                    <span class="log-level-success">[SUCCESS]</span>
-                                    Data synchronization completed (247 devices, 15 notifications)
-                                </div>
-                                <div class="log-entry">
-                                    <span class="log-timestamp">[2025-01-15 10:32:03]</span>
-                                    <span class="log-level-info">[INFO]</span>
-                                    WebSocket client connected from 192.168.1.100
-                                </div>
+                                <!-- Logs will be populated by refreshSystemStatus or other dynamic actions -->
                             </div>
                         </div>
                     </div>
@@ -1010,29 +808,20 @@
         // Initialize settings
         document.addEventListener('DOMContentLoaded', function() {
             loadSettings();
-            checkConnectionStatus();
-            setupWebSocket();
+            checkConnectionStatus(); // Initial check
+            // Call the global setupWebSocket function from app.js
+            setupWebSocket(
+                [], // No specific event subscriptions needed for settings page by default
+                { // No specific message handlers needed by default for settings page
+                    // Example: 'SYSTEM_STATUS_UPDATE': (data) => updateSystemStatusDisplay(data)
+                },
+                () => updateConnectionStatus(true), // onOpen
+                () => updateConnectionStatus(false), // onClose
+                () => updateConnectionStatus(false)  // onError
+            );
         });
 
-        // Setup WebSocket for real-time status updates
-        function setupWebSocket() {
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
-            
-            ws.onopen = function() {
-                updateConnectionStatus(true);
-            };
-            
-            ws.onclose = function() {
-                updateConnectionStatus(false);
-                // Attempt to reconnect
-                setTimeout(setupWebSocket, 5000);
-            };
-            
-            ws.onerror = function() {
-                updateConnectionStatus(false);
-            };
-        }
+        // setupWebSocket is now in app.js
 
         // Update connection status indicator
         function updateConnectionStatus(connected) {
@@ -1199,15 +988,8 @@
         }
 
         // Utility functions
-        function showSuccess(message) {
-            console.log('Success:', message);
-            // TODO: Implement toast notification system
-        }
-
-        function showError(message) {
-            console.error('Error:', message);
-            // TODO: Implement toast notification system
-        }
+        // showSuccess is now in utils.js
+        // showError is now in utils.js
 
         // Auto-save timer
         let autoSaveTimer;
@@ -1236,5 +1018,7 @@
             }
         });
     </script>
+    <script src="/js/utils.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 </html>
