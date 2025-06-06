@@ -1,0 +1,51 @@
+# requirements.txt
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+sqlalchemy==2.0.23
+alembic==1.12.1
+requests==2.31.0
+python-multipart==0.0.6
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+apscheduler==3.10.4
+click==8.1.7
+rich==13.7.0
+tabulate==0.9.0
+python-dateutil==2.8.2
+psutil==5.9.6
+
+# .env.example
+# Copy this file to .env and fill in your actual values
+
+# Pulseway API Configuration
+PULSEWAY_TOKEN_ID=your_token_id_here
+PULSEWAY_TOKEN_SECRET=your_token_secret_here
+PULSEWAY_BASE_URL=https://api.pulseway.com/v3/
+
+# Database Configuration
+DATABASE_URL=sqlite:///./data/pulseway.db
+
+# Application Configuration
+LOG_LEVEL=INFO
+DEBUG=false
+
+# Optional: Custom sync interval (in minutes)
+SYNC_INTERVAL_MINUTES=10
+
+# Optional: Rate limiting
+MIN_REQUEST_INTERVAL=0.1
+
+# .env.dev
+# Development environment variables
+PULSEWAY_TOKEN_ID=your_dev_token_id
+PULSEWAY_TOKEN_SECRET=your_dev_token_secret
+PULSEWAY_BASE_URL=https://api.pulseway.com/v3/
+
+DATABASE_URL=sqlite:///./data/pulseway_dev.db
+
+LOG_LEVEL=DEBUG
+DEBUG=true
+RELOAD=true
+
+SYNC_INTERVAL_MINUTES=5
