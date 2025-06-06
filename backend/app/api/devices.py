@@ -1,5 +1,5 @@
 # app/api/devices.py
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional, Dict, Any
 from ..database import SessionLocal
@@ -70,10 +70,9 @@ def get_db():
         db.close()
 
 # Dependency to get Pulseway client from app state
-def get_pulseway_client():
+def get_pulseway_client(request: Request) -> PulsewayClient:
     # This will be injected from main.py
-    from ..main import app
-    return app.state.pulseway_client
+    return request.app.state.pulseway_client
 
 @router.get("/", response_model=List[DeviceSummary])
 async def get_devices(

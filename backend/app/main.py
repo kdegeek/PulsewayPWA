@@ -80,6 +80,7 @@ app = FastAPI(
 # Add CORS middleware for future PWA
 app.add_middleware(
     CORSMiddleware,
+    # TODO: Restrict allow_origins for production environments.
     allow_origins=["*"],  # Configure appropriately for production
     allow_credentials=True,
     allow_methods=["*"],
