@@ -1,8 +1,7 @@
 # app/main.py
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
@@ -31,10 +30,20 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     
     # Initialize Pulseway client
+    token_id = os.getenv("PULSEWAY_TOKEN_ID")
+    token_secret = os.getenv("PULSEWAY_TOKEN_SECRET")
+
+    if not token_id or not token_secret:
+        logger.warning("PULSEWAY_TOKEN_ID or PULSEWAY_TOKEN_SECRET not set. Client may not function correctly.")
+        # Provide empty strings if None, assuming client might handle this or fail gracefully
+        # Or, raise an error here if they are absolutely mandatory for startup
+        token_id = token_id or ""
+        token_secret = token_secret or ""
+
     pulseway_client = PulsewayClient(
         base_url=os.getenv("PULSEWAY_BASE_URL", "https://api.pulseway.com/v3/"),
-        token_id=os.getenv("PULSEWAY_TOKEN_ID"),
-        token_secret=os.getenv("PULSEWAY_TOKEN_SECRET")
+        token_id=token_id,
+        token_secret=token_secret
     )
     
     # Initialize data sync service

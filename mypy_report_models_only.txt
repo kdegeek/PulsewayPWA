@@ -1,0 +1,23 @@
+MyPy Report for module: backend.app.models.database
+--------------------------------------------------
+mypy: can't find module 'backend.app.models.database'
+
+MyPy invocation with '-m backend.app.models.database' failed or reported errors.
+Falling back to full 'mypy -p backend.app' to capture errors for models/database.py if present.
+--------------------------------------------------
+backend/app/pulseway/client.py:85: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:114: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:152: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:164: error: Incompatible types in assignment (expression has type "list[dict[Any, Any]]", target has type "str")  [assignment]
+backend/app/pulseway/client.py:183: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:197: error: Incompatible types in assignment (expression has type "str", target has type "list[str]")  [assignment]
+backend/app/pulseway/client.py:205: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:219: error: Incompatible types in assignment (expression has type "str", target has type "list[str]")  [assignment]
+backend/app/pulseway/client.py:221: error: Incompatible types in assignment (expression has type "list[dict[Any, Any]]", target has type "list[str]")  [assignment]
+backend/app/pulseway/client.py:229: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/cli_tool.py:229: error: Name "list" already defined on line 55  [no-redef]
+backend/app/fastapi-pwa-integration.py:47: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+backend/app/fastapi-pwa-integration.py:48: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+Found 11 errors in 2 files (checked 19 source files)
+
+==================================================

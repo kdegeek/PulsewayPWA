@@ -5,9 +5,6 @@ import asyncio
 import json
 import sys
 import os
-from datetime import datetime
-from typing import Optional, List
-from tabulate import tabulate
 from rich.console import Console
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -18,7 +15,7 @@ from rich.text import Text
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app'))
 
 from app.database import SessionLocal
-from app.models.database import Device, Notification, Script, Task, Workflow, Organization, Site, Group
+from app.models.database import Device, Notification, Script
 from app.pulseway.client import PulsewayClient
 from app.services.data_sync import DataSyncService
 
@@ -44,13 +41,11 @@ def get_pulseway_client():
 @click.version_option(version="1.0.0")
 def cli():
     """Pulseway CLI - Command line interface for Pulseway backend operations"""
-    pass
 
 # Device commands
 @cli.group()
 def devices():
     """Device management commands"""
-    pass
 
 @devices.command()
 @click.option('--organization', '-o', help='Filter by organization')
@@ -224,7 +219,6 @@ def stats():
 @cli.group()
 def scripts():
     """Script management commands"""
-    pass
 
 @scripts.command()
 @click.option('--platform', help='Filter by platform (Windows, Linux, Mac OS)')
@@ -334,7 +328,6 @@ def execute(script_id, device_id, variables):
 @cli.group()
 def monitoring():
     """Monitoring and alerting commands"""
-    pass
 
 @monitoring.command()
 def dashboard():
@@ -448,7 +441,6 @@ def alerts(priority, limit):
 @cli.group()
 def sync():
     """Data synchronization commands"""
-    pass
 
 @sync.command()
 def now():

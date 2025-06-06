@@ -1,9 +1,10 @@
 # app/api/devices.py
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session, joinedload
-from typing import List, Optional, Dict, Any
+from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
+from typing import List, Optional, Dict
 from ..database import SessionLocal
-from ..models.database import Device, DeviceAsset, Notification, Organization, Site, Group
+from ..models.database import Device, DeviceAsset, Notification
 from ..pulseway.client import PulsewayClient
 from pydantic import BaseModel
 from datetime import datetime
@@ -140,21 +141,21 @@ async def get_device_stats(db: Session = Depends(get_db)):
     # Devices by organization
     org_stats = db.query(
         Device.organization_name, 
-        db.func.count(Device.identifier)
+        func.count(Device.identifier)
     ).group_by(Device.organization_name).all()
     devices_by_organization = {org or "Unknown": count for org, count in org_stats}
     
     # Devices by site
     site_stats = db.query(
         Device.site_name, 
-        db.func.count(Device.identifier)
+        func.count(Device.identifier)
     ).group_by(Device.site_name).all()
     devices_by_site = {site or "Unknown": count for site, count in site_stats}
     
     # Devices by type
     type_stats = db.query(
         Device.computer_type, 
-        db.func.count(Device.identifier)
+        func.count(Device.identifier)
     ).group_by(Device.computer_type).all()
     devices_by_type = {comp_type or "Unknown": count for comp_type, count in type_stats}
     

@@ -1,0 +1,44 @@
+MyPy command is available.
+----------------------------------------------------------------------
+MyPy report for: backend/app/pulseway/client.py
+----------------------------------------------------------------------
+backend/app/pulseway/client.py:74: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:103: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:141: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:153: error: Incompatible types in assignment (expression has type "list[dict[Any, Any]]", target has type "str")  [assignment]
+backend/app/pulseway/client.py:172: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:186: error: Incompatible types in assignment (expression has type "str", target has type "list[str]")  [assignment]
+backend/app/pulseway/client.py:194: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:208: error: Incompatible types in assignment (expression has type "str", target has type "list[str]")  [assignment]
+backend/app/pulseway/client.py:210: error: Incompatible types in assignment (expression has type "list[dict[Any, Any]]", target has type "list[str]")  [assignment]
+backend/app/pulseway/client.py:218: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+Found 10 errors in 1 file (checked 1 source file)
+----------------------------------------------------------------------
+MyPy report for: backend/app/api/monitoring.py
+----------------------------------------------------------------------
+backend/app/api/scripts.py:258: error: Argument "start_time" to "ScriptExecutionDetail" has incompatible type "datetime | None"; expected "datetime"  [arg-type]
+Found 1 error in 1 file (checked 1 source file)
+----------------------------------------------------------------------
+MyPy report for: backend/app/api/scripts.py
+----------------------------------------------------------------------
+backend/app/api/scripts.py:258: error: Argument "start_time" to "ScriptExecutionDetail" has incompatible type "datetime | None"; expected "datetime"  [arg-type]
+Found 1 error in 1 file (checked 1 source file)
+----------------------------------------------------------------------
+MyPy report for: backend/app/fastapi-pwa-integration.py
+----------------------------------------------------------------------
+backend/app/fastapi-pwa-integration.py:47: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+backend/app/fastapi-pwa-integration.py:48: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+backend/app/fastapi-pwa-integration.py:70: error: Incompatible default for argument "event_type" (default has type "None", argument has type "str")  [assignment]
+backend/app/fastapi-pwa-integration.py:70: note: PEP 484 prohibits implicit Optional. Accordingly, mypy has changed its default to no_implicit_optional=True
+backend/app/fastapi-pwa-integration.py:70: note: Use https://github.com/hauntsaninja/no_implicit_optional to automatically upgrade your codebase
+backend/app/fastapi-pwa-integration.py:248: error: Incompatible default for argument "device_id" (default has type "None", argument has type "str")  [assignment]
+backend/app/fastapi-pwa-integration.py:248: note: PEP 484 prohibits implicit Optional. Accordingly, mypy has changed its default to no_implicit_optional=True
+backend/app/fastapi-pwa-integration.py:248: note: Use https://github.com/hauntsaninja/no_implicit_optional to automatically upgrade your codebase
+backend/app/fastapi-pwa-integration.py:249: error: Incompatible default for argument "url" (default has type "None", argument has type "str")  [assignment]
+backend/app/fastapi-pwa-integration.py:249: note: PEP 484 prohibits implicit Optional. Accordingly, mypy has changed its default to no_implicit_optional=True
+backend/app/fastapi-pwa-integration.py:249: note: Use https://github.com/hauntsaninja/no_implicit_optional to automatically upgrade your codebase
+Found 3 errors in 1 file (checked 1 source file)
+----------------------------------------------------------------------
+MyPy report for: backend/app/config.py
+----------------------------------------------------------------------
+Success: no issues found in 1 source file

@@ -1,10 +1,19 @@
+from typing import Any, Dict, List, Optional
 # app/pulseway/client.py
 import requests
 from requests.auth import HTTPBasicAuth
-from typing import Optional, Dict, Any, List
 import logging
-from datetime import datetime
 import time
+
+def try_convert_to_int(value: Any) -> Optional[int]:
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        # Log or handle error appropriately in real code
+        return None # Or raise a custom error, or return a default int
+
 
 logger = logging.getLogger(__name__)
 

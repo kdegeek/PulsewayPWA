@@ -44,7 +44,7 @@ class ScriptExecutionResponse(BaseModel):
 
 class ScriptExecutionDetail(BaseModel):
     id: str
-    start_time: datetime
+    start_time: Optional[datetime]
     duration_in_seconds: Optional[float]
     state: str
     end_time: Optional[datetime]

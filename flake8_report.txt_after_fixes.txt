@@ -1,0 +1,745 @@
+backend/app/api/__init__.py:2:1: W391 blank line at end of file
+backend/app/api/devices.py:15:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:32:1: W293 blank line contains whitespace
+backend/app/api/devices.py:36:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:49:1: W293 blank line contains whitespace
+backend/app/api/devices.py:53:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:66:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:74:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:79:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:82:80: E501 line too long (89 > 79 characters)
+backend/app/api/devices.py:85:80: E501 line too long (86 > 79 characters)
+backend/app/api/devices.py:86:80: E501 line too long (88 > 79 characters)
+backend/app/api/devices.py:87:80: E501 line too long (90 > 79 characters)
+backend/app/api/devices.py:88:80: E501 line too long (86 > 79 characters)
+backend/app/api/devices.py:89:80: E501 line too long (87 > 79 characters)
+backend/app/api/devices.py:93:1: W293 blank line contains whitespace
+backend/app/api/devices.py:95:1: W293 blank line contains whitespace
+backend/app/api/devices.py:98:80: E501 line too long (81 > 79 characters)
+backend/app/api/devices.py:99:1: W293 blank line contains whitespace
+backend/app/api/devices.py:102:1: W293 blank line contains whitespace
+backend/app/api/devices.py:105:1: W293 blank line contains whitespace
+backend/app/api/devices.py:108:1: W293 blank line contains whitespace
+backend/app/api/devices.py:111:1: W293 blank line contains whitespace
+backend/app/api/devices.py:114:50: W291 trailing whitespace
+backend/app/api/devices.py:117:1: W293 blank line contains whitespace
+backend/app/api/devices.py:120:1: W293 blank line contains whitespace
+backend/app/api/devices.py:123:1: W293 blank line contains whitespace
+backend/app/api/devices.py:126:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:129:1: W293 blank line contains whitespace
+backend/app/api/devices.py:132:63: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/api/devices.py:134:76: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/api/devices.py:134:80: E501 line too long (91 > 79 characters)
+backend/app/api/devices.py:136:1: W293 blank line contains whitespace
+backend/app/api/devices.py:138:80: E501 line too long (88 > 79 characters)
+backend/app/api/devices.py:139:80: E501 line too long (88 > 79 characters)
+backend/app/api/devices.py:140:1: W293 blank line contains whitespace
+backend/app/api/devices.py:143:34: W291 trailing whitespace
+backend/app/api/devices.py:146:80: E501 line too long (83 > 79 characters)
+backend/app/api/devices.py:147:1: W293 blank line contains whitespace
+backend/app/api/devices.py:150:26: W291 trailing whitespace
+backend/app/api/devices.py:154:1: W293 blank line contains whitespace
+backend/app/api/devices.py:157:30: W291 trailing whitespace
+backend/app/api/devices.py:160:80: E501 line too long (88 > 79 characters)
+backend/app/api/devices.py:161:1: W293 blank line contains whitespace
+backend/app/api/devices.py:175:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:178:1: W293 blank line contains whitespace
+backend/app/api/devices.py:180:1: W293 blank line contains whitespace
+backend/app/api/devices.py:183:1: W293 blank line contains whitespace
+backend/app/api/devices.py:186:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:188:20: W291 trailing whitespace
+backend/app/api/devices.py:194:1: W293 blank line contains whitespace
+backend/app/api/devices.py:199:1: W293 blank line contains whitespace
+backend/app/api/devices.py:203:1: W293 blank line contains whitespace
+backend/app/api/devices.py:206:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:209:1: W293 blank line contains whitespace
+backend/app/api/devices.py:214:1: W293 blank line contains whitespace
+backend/app/api/devices.py:218:1: W293 blank line contains whitespace
+backend/app/api/devices.py:220:80: E501 line too long (87 > 79 characters)
+backend/app/api/devices.py:221:1: W293 blank line contains whitespace
+backend/app/api/devices.py:233:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:235:20: W291 trailing whitespace
+backend/app/api/devices.py:240:1: W293 blank line contains whitespace
+backend/app/api/devices.py:245:1: W293 blank line contains whitespace
+backend/app/api/devices.py:247:80: E501 line too long (87 > 79 characters)
+backend/app/api/devices.py:248:1: W293 blank line contains whitespace
+backend/app/api/devices.py:250:80: E501 line too long (80 > 79 characters)
+backend/app/api/devices.py:251:1: W293 blank line contains whitespace
+backend/app/api/devices.py:255:80: E501 line too long (83 > 79 characters)
+backend/app/api/devices.py:259:80: E501 line too long (85 > 79 characters)
+backend/app/api/devices.py:260:80: E501 line too long (115 > 79 characters)
+backend/app/api/devices.py:261:80: E501 line too long (115 > 79 characters)
+backend/app/api/devices.py:262:80: E501 line too long (109 > 79 characters)
+backend/app/api/devices.py:263:80: E501 line too long (100 > 79 characters)
+backend/app/api/devices.py:265:1: W293 blank line contains whitespace
+backend/app/api/devices.py:267:1: W293 blank line contains whitespace
+backend/app/api/devices.py:270:80: E501 line too long (93 > 79 characters)
+backend/app/api/devices.py:271:1: W293 blank line contains whitespace
+backend/app/api/devices.py:274:80: E501 line too long (95 > 79 characters)
+backend/app/api/devices.py:276:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:283:1: W293 blank line contains whitespace
+backend/app/api/devices.py:290:1: W293 blank line contains whitespace
+backend/app/api/devices.py:293:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:301:1: W293 blank line contains whitespace
+backend/app/api/devices.py:305:1: W293 blank line contains whitespace
+backend/app/api/devices.py:308:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:316:1: W293 blank line contains whitespace
+backend/app/api/devices.py:320:1: W293 blank line contains whitespace
+backend/app/api/devices.py:323:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:329:1: W293 blank line contains whitespace
+backend/app/api/devices.py:333:1: W293 blank line contains whitespace
+backend/app/api/devices.py:336:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:342:1: W293 blank line contains whitespace
+backend/app/api/devices.py:346:1: W293 blank line contains whitespace
+backend/app/api/devices.py:349:1: E302 expected 2 blank lines, found 1
+backend/app/api/devices.py:356:1: W293 blank line contains whitespace
+backend/app/api/devices.py:358:26: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+backend/app/api/devices.py:359:80: E501 line too long (80 > 79 characters)
+backend/app/api/devices.py:360:1: W293 blank line contains whitespace
+backend/app/api/devices.py:361:19: W292 no newline at end of file
+backend/app/api/monitoring.py:14:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:25:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:34:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:43:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:51:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:59:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:67:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:74:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:77:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:80:63: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/api/monitoring.py:82:77: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/api/monitoring.py:82:80: E501 line too long (92 > 79 characters)
+backend/app/api/monitoring.py:83:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:85:80: E501 line too long (85 > 79 characters)
+backend/app/api/monitoring.py:86:80: E501 line too long (85 > 79 characters)
+backend/app/api/monitoring.py:87:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:90:76: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+backend/app/api/monitoring.py:90:80: E501 line too long (92 > 79 characters)
+backend/app/api/monitoring.py:91:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:94:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:107:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:110:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:112:80: E501 line too long (84 > 79 characters)
+backend/app/api/monitoring.py:113:80: E501 line too long (84 > 79 characters)
+backend/app/api/monitoring.py:114:80: E501 line too long (80 > 79 characters)
+backend/app/api/monitoring.py:116:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:118:80: E501 line too long (94 > 79 characters)
+backend/app/api/monitoring.py:119:80: E501 line too long (94 > 79 characters)
+backend/app/api/monitoring.py:120:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:131:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:134:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:138:30: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/api/monitoring.py:141:35: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+backend/app/api/monitoring.py:144:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:147:30: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/api/monitoring.py:152:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:156:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:157:64: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+backend/app/api/monitoring.py:157:80: E501 line too long (80 > 79 characters)
+backend/app/api/monitoring.py:158:73: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/api/monitoring.py:158:80: E501 line too long (88 > 79 characters)
+backend/app/api/monitoring.py:159:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:161:80: E501 line too long (87 > 79 characters)
+backend/app/api/monitoring.py:162:80: E501 line too long (89 > 79 characters)
+backend/app/api/monitoring.py:164:80: E501 line too long (86 > 79 characters)
+backend/app/api/monitoring.py:166:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:168:66: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/api/monitoring.py:168:80: E501 line too long (81 > 79 characters)
+backend/app/api/monitoring.py:169:67: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+backend/app/api/monitoring.py:169:80: E501 line too long (83 > 79 characters)
+backend/app/api/monitoring.py:170:80: E501 line too long (83 > 79 characters)
+backend/app/api/monitoring.py:171:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:190:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:194:80: E501 line too long (116 > 79 characters)
+backend/app/api/monitoring.py:197:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:199:80: E501 line too long (81 > 79 characters)
+backend/app/api/monitoring.py:201:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:204:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:205:80: E501 line too long (82 > 79 characters)
+backend/app/api/monitoring.py:206:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:212:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:221:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:224:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:227:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:229:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:231:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:233:80: E501 line too long (81 > 79 characters)
+backend/app/api/monitoring.py:234:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:240:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:249:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:252:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:255:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:257:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:259:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:262:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:268:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:277:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:280:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:283:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:286:31: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/api/monitoring.py:288:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:293:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:295:80: E501 line too long (85 > 79 characters)
+backend/app/api/monitoring.py:296:80: E501 line too long (94 > 79 characters)
+backend/app/api/monitoring.py:297:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:301:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:305:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:308:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:317:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:323:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:326:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:329:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:334:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:339:72: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/api/monitoring.py:339:80: E501 line too long (88 > 79 characters)
+backend/app/api/monitoring.py:340:73: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+backend/app/api/monitoring.py:340:80: E501 line too long (90 > 79 characters)
+backend/app/api/monitoring.py:341:80: E501 line too long (95 > 79 characters)
+backend/app/api/monitoring.py:342:80: E501 line too long (94 > 79 characters)
+backend/app/api/monitoring.py:345:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:348:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:355:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:356:61: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+backend/app/api/monitoring.py:357:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:360:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:361:80: E501 line too long (82 > 79 characters)
+backend/app/api/monitoring.py:362:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:365:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:366:80: E501 line too long (86 > 79 characters)
+backend/app/api/monitoring.py:368:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:369:80: E501 line too long (92 > 79 characters)
+backend/app/api/monitoring.py:370:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:373:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:376:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:379:1: E302 expected 2 blank lines, found 1
+backend/app/api/monitoring.py:382:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:383:69: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+backend/app/api/monitoring.py:383:80: E501 line too long (85 > 79 characters)
+backend/app/api/monitoring.py:387:1: W293 blank line contains whitespace
+backend/app/api/monitoring.py:389:29: W291 trailing whitespace
+backend/app/api/monitoring.py:391:6: W292 no newline at end of file
+backend/app/api/notifications.py:5:1: E302 expected 2 blank lines, found 1
+backend/app/api/organizations.py:5:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:14:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:22:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:26:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:31:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:35:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:40:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:45:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:56:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:64:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:68:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:71:80: E501 line too long (101 > 79 characters)
+backend/app/api/scripts.py:72:80: E501 line too long (81 > 79 characters)
+backend/app/api/scripts.py:73:80: E501 line too long (90 > 79 characters)
+backend/app/api/scripts.py:74:80: E501 line too long (86 > 79 characters)
+backend/app/api/scripts.py:75:80: E501 line too long (92 > 79 characters)
+backend/app/api/scripts.py:80:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:82:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:87:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:90:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:93:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:96:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:102:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:106:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:108:20: W291 trailing whitespace
+backend/app/api/scripts.py:113:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:116:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:122:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:139:80: E501 line too long (86 > 79 characters)
+backend/app/api/scripts.py:140:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:143:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:151:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:156:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:158:80: E501 line too long (102 > 79 characters)
+backend/app/api/scripts.py:161:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:164:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:173:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:176:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:184:80: E501 line too long (91 > 79 characters)
+backend/app/api/scripts.py:185:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:187:80: E501 line too long (89 > 79 characters)
+backend/app/api/scripts.py:189:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:198:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:206:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:208:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:213:80: E501 line too long (91 > 79 characters)
+backend/app/api/scripts.py:215:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:217:80: E501 line too long (97 > 79 characters)
+backend/app/api/scripts.py:219:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:219:80: E501 line too long (103 > 79 characters)
+backend/app/api/scripts.py:227:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:234:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:236:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:238:80: E501 line too long (85 > 79 characters)
+backend/app/api/scripts.py:239:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:243:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:246:80: E501 line too long (103 > 79 characters)
+backend/app/api/scripts.py:249:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:252:80: E501 line too long (99 > 79 characters)
+backend/app/api/scripts.py:255:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:266:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:268:80: E501 line too long (104 > 79 characters)
+backend/app/api/scripts.py:270:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:273:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:277:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:280:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:283:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:284:80: E501 line too long (81 > 79 characters)
+backend/app/api/scripts.py:289:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:299:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:304:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:306:80: E501 line too long (86 > 79 characters)
+backend/app/api/scripts.py:309:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:312:29: W291 trailing whitespace
+backend/app/api/scripts.py:315:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:316:80: E501 line too long (87 > 79 characters)
+backend/app/api/scripts.py:322:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:326:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:335:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:338:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:350:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:356:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:366:1: E302 expected 2 blank lines, found 1
+backend/app/api/scripts.py:373:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:378:1: W293 blank line contains whitespace
+backend/app/api/scripts.py:379:19: W292 no newline at end of file
+backend/app/cli_tool.py:2:1: E265 block comment should start with '# '
+backend/app/cli_tool.py:17:1: E402 module level import not at top of file
+backend/app/cli_tool.py:18:1: E402 module level import not at top of file
+backend/app/cli_tool.py:19:1: E402 module level import not at top of file
+backend/app/cli_tool.py:20:1: E402 module level import not at top of file
+backend/app/cli_tool.py:24:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:28:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:33:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:35:80: E501 line too long (121 > 79 characters)
+backend/app/cli_tool.py:37:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:40:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:46:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:50:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:56:80: E501 line too long (82 > 79 characters)
+backend/app/cli_tool.py:57:80: E501 line too long (84 > 79 characters)
+backend/app/cli_tool.py:58:80: E501 line too long (126 > 79 characters)
+backend/app/cli_tool.py:59:80: E501 line too long (98 > 79 characters)
+backend/app/cli_tool.py:61:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:63:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:65:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:68:80: E501 line too long (81 > 79 characters)
+backend/app/cli_tool.py:74:47: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/cli_tool.py:76:47: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+backend/app/cli_tool.py:78:80: E501 line too long (103 > 79 characters)
+backend/app/cli_tool.py:79:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:81:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:96:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:100:80: E501 line too long (189 > 79 characters)
+backend/app/cli_tool.py:101:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:111:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:116:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:120:47: W291 trailing whitespace
+backend/app/cli_tool.py:126:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:128:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:131:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:135:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:138:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:142:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:171:80: E501 line too long (117 > 79 characters)
+backend/app/cli_tool.py:172:80: E501 line too long (102 > 79 characters)
+backend/app/cli_tool.py:180:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:181:80: E501 line too long (88 > 79 characters)
+backend/app/cli_tool.py:184:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:187:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:189:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:191:55: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/cli_tool.py:193:68: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/cli_tool.py:193:80: E501 line too long (83 > 79 characters)
+backend/app/cli_tool.py:194:80: E501 line too long (88 > 79 characters)
+backend/app/cli_tool.py:195:80: E501 line too long (88 > 79 characters)
+backend/app/cli_tool.py:196:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:214:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:215:80: E501 line too long (83 > 79 characters)
+backend/app/cli_tool.py:219:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:223:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:227:80: E501 line too long (84 > 79 characters)
+backend/app/cli_tool.py:228:1: F811 redefinition of unused 'list' from line 59
+backend/app/cli_tool.py:230:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:233:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:240:49: W291 trailing whitespace
+backend/app/cli_tool.py:243:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:245:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:252:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:254:80: E501 line too long (82 > 79 characters)
+backend/app/cli_tool.py:256:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:264:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:268:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:274:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:276:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:282:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:286:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:292:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:294:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:303:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:309:9: F841 local variable 'task' is assigned to but never used
+backend/app/cli_tool.py:309:80: E501 line too long (99 > 79 characters)
+backend/app/cli_tool.py:310:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:312:80: E501 line too long (80 > 79 characters)
+backend/app/cli_tool.py:315:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:317:31: F541 f-string is missing placeholders
+backend/app/cli_tool.py:317:80: E501 line too long (88 > 79 characters)
+backend/app/cli_tool.py:321:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:324:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:328:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:332:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:335:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:337:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:340:63: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/cli_tool.py:342:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:344:80: E501 line too long (89 > 79 characters)
+backend/app/cli_tool.py:345:80: E501 line too long (89 > 79 characters)
+backend/app/cli_tool.py:346:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:351:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:361:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:366:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:367:80: E501 line too long (87 > 79 characters)
+backend/app/cli_tool.py:368:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:375:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:379:38: W291 trailing whitespace
+backend/app/cli_tool.py:383:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:384:80: E501 line too long (91 > 79 characters)
+backend/app/cli_tool.py:385:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:389:80: E501 line too long (88 > 79 characters)
+backend/app/cli_tool.py:391:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:393:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:396:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:397:80: E501 line too long (116 > 79 characters)
+backend/app/cli_tool.py:398:80: E501 line too long (90 > 79 characters)
+backend/app/cli_tool.py:401:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:404:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:407:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:408:80: E501 line too long (83 > 79 characters)
+backend/app/cli_tool.py:409:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:412:47: W291 trailing whitespace
+backend/app/cli_tool.py:415:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:420:30: W291 trailing whitespace
+backend/app/cli_tool.py:423:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:424:80: E501 line too long (96 > 79 characters)
+backend/app/cli_tool.py:426:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:429:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:434:80: E501 line too long (84 > 79 characters)
+backend/app/cli_tool.py:436:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:441:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:445:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:448:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:450:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:456:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:457:9: F841 local variable 'task' is assigned to but never used
+backend/app/cli_tool.py:457:80: E501 line too long (83 > 79 characters)
+backend/app/cli_tool.py:458:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:462:80: E501 line too long (89 > 79 characters)
+backend/app/cli_tool.py:463:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:465:80: E501 line too long (80 > 79 characters)
+backend/app/cli_tool.py:468:1: E302 expected 2 blank lines, found 1
+backend/app/cli_tool.py:471:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:473:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:475:80: E501 line too long (95 > 79 characters)
+backend/app/cli_tool.py:476:80: E501 line too long (113 > 79 characters)
+backend/app/cli_tool.py:477:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:481:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:492:80: E501 line too long (87 > 79 characters)
+backend/app/cli_tool.py:494:1: W293 blank line contains whitespace
+backend/app/cli_tool.py:499:1: E305 expected 2 blank lines after class or function definition, found 1
+backend/app/cli_tool.py:500:10: W292 no newline at end of file
+backend/app/config.py:8:1: E302 expected 2 blank lines, found 1
+backend/app/config.py:10:1: W293 blank line contains whitespace
+backend/app/config.py:15:1: W293 blank line contains whitespace
+backend/app/config.py:18:1: W293 blank line contains whitespace
+backend/app/config.py:22:1: W293 blank line contains whitespace
+backend/app/config.py:26:1: W293 blank line contains whitespace
+backend/app/config.py:29:80: E501 line too long (83 > 79 characters)
+backend/app/config.py:31:1: W293 blank line contains whitespace
+backend/app/config.py:37:1: E305 expected 2 blank lines after class or function definition, found 1
+backend/app/database.py:13:80: E501 line too long (81 > 79 characters)
+backend/app/fastapi-pwa-integration.py:2:80: E501 line too long (91 > 79 characters)
+backend/app/fastapi-pwa-integration.py:45:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:54:80: E501 line too long (91 > 79 characters)
+backend/app/fastapi-pwa-integration.py:61:80: E501 line too long (94 > 79 characters)
+backend/app/fastapi-pwa-integration.py:71:80: E501 line too long (84 > 79 characters)
+backend/app/fastapi-pwa-integration.py:76:80: E501 line too long (91 > 79 characters)
+backend/app/fastapi-pwa-integration.py:82:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:94:1: E305 expected 2 blank lines after class or function definition, found 1
+backend/app/fastapi-pwa-integration.py:97:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:101:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:104:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:109:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:113:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:117:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:129:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:131:80: E501 line too long (87 > 79 characters)
+backend/app/fastapi-pwa-integration.py:132:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:139:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:146:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:148:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:156:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:160:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:162:80: E501 line too long (91 > 79 characters)
+backend/app/fastapi-pwa-integration.py:163:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:171:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:173:79: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+backend/app/fastapi-pwa-integration.py:173:80: E501 line too long (94 > 79 characters)
+backend/app/fastapi-pwa-integration.py:174:80: E501 line too long (104 > 79 characters)
+backend/app/fastapi-pwa-integration.py:175:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:180:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:194:80: E501 line too long (94 > 79 characters)
+backend/app/fastapi-pwa-integration.py:199:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:201:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:204:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:207:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:211:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:219:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:228:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:235:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:243:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:252:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:265:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:267:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:268:80: E501 line too long (86 > 79 characters)
+backend/app/fastapi-pwa-integration.py:271:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:274:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:276:80: E501 line too long (85 > 79 characters)
+backend/app/fastapi-pwa-integration.py:277:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:282:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:287:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:294:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:299:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:302:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:310:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:313:80: E501 line too long (83 > 79 characters)
+backend/app/fastapi-pwa-integration.py:314:1: W293 blank line contains whitespace
+backend/app/fastapi-pwa-integration.py:320:80: E501 line too long (93 > 79 characters)
+backend/app/fastapi-pwa-integration.py:321:80: E501 line too long (93 > 79 characters)
+backend/app/fastapi-pwa-integration.py:328:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:333:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:338:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:343:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:348:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:354:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:359:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:365:1: E302 expected 2 blank lines, found 1
+backend/app/fastapi-pwa-integration.py:372:48: W292 no newline at end of file
+backend/app/logging_config.py:9:1: E302 expected 2 blank lines, found 1
+backend/app/logging_config.py:11:1: W293 blank line contains whitespace
+backend/app/logging_config.py:15:1: W293 blank line contains whitespace
+backend/app/logging_config.py:19:1: W293 blank line contains whitespace
+backend/app/logging_config.py:22:1: W293 blank line contains whitespace
+backend/app/logging_config.py:31:1: W293 blank line contains whitespace
+backend/app/logging_config.py:40:80: E501 line too long (88 > 79 characters)
+backend/app/logging_config.py:44:1: W293 blank line contains whitespace
+backend/app/logging_config.py:54:1: W293 blank line contains whitespace
+backend/app/main.py:23:1: E302 expected 2 blank lines, found 1
+backend/app/main.py:28:1: W293 blank line contains whitespace
+backend/app/main.py:31:1: W293 blank line contains whitespace
+backend/app/main.py:37:80: E501 line too long (112 > 79 characters)
+backend/app/main.py:38:80: E501 line too long (93 > 79 characters)
+backend/app/main.py:44:80: E501 line too long (80 > 79 characters)
+backend/app/main.py:48:1: W293 blank line contains whitespace
+backend/app/main.py:51:1: W293 blank line contains whitespace
+backend/app/main.py:60:1: W293 blank line contains whitespace
+backend/app/main.py:63:1: W293 blank line contains whitespace
+backend/app/main.py:70:1: W293 blank line contains whitespace
+backend/app/main.py:74:1: W293 blank line contains whitespace
+backend/app/main.py:76:1: W293 blank line contains whitespace
+backend/app/main.py:101:80: E501 line too long (84 > 79 characters)
+backend/app/main.py:103:1: E302 expected 2 blank lines, found 1
+backend/app/main.py:112:1: E302 expected 2 blank lines, found 1
+backend/app/main.py:123:1: W293 blank line contains whitespace
+backend/app/main.py:130:1: E302 expected 2 blank lines, found 1
+backend/app/main.py:135:80: E501 line too long (81 > 79 characters)
+backend/app/main.py:141:1: E302 expected 2 blank lines, found 1
+backend/app/main.py:149:1: E302 expected 2 blank lines, found 1
+backend/app/main.py:150:37: W292 no newline at end of file
+backend/app/pulseway/client.py:8:1: E302 expected 2 blank lines, found 1
+backend/app/pulseway/client.py:15:20: E261 at least two spaces before inline comment
+backend/app/pulseway/client.py:20:1: E302 expected 2 blank lines, found 1
+backend/app/pulseway/client.py:22:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:32:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:36:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:44:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:45:80: E501 line too long (84 > 79 characters)
+backend/app/pulseway/client.py:48:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:50:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:61:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:62:80: E501 line too long (82 > 79 characters)
+backend/app/pulseway/client.py:65:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:66:80: E501 line too long (81 > 79 characters)
+backend/app/pulseway/client.py:69:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:70:80: E501 line too long (80 > 79 characters)
+backend/app/pulseway/client.py:73:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:77:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:79:80: E501 line too long (106 > 79 characters)
+backend/app/pulseway/client.py:85:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:89:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:90:80: E501 line too long (104 > 79 characters)
+backend/app/pulseway/client.py:94:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:98:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:102:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:106:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:108:80: E501 line too long (105 > 79 characters)
+backend/app/pulseway/client.py:114:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:116:80: E501 line too long (81 > 79 characters)
+backend/app/pulseway/client.py:120:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:124:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:130:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:134:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:140:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:144:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:146:80: E501 line too long (106 > 79 characters)
+backend/app/pulseway/client.py:152:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:156:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:157:80: E501 line too long (96 > 79 characters)
+backend/app/pulseway/client.py:157:97: W291 trailing whitespace
+backend/app/pulseway/client.py:166:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:167:80: E501 line too long (116 > 79 characters)
+backend/app/pulseway/client.py:170:80: E501 line too long (103 > 79 characters)
+backend/app/pulseway/client.py:171:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:172:80: E501 line too long (112 > 79 characters)
+backend/app/pulseway/client.py:174:80: E501 line too long (103 > 79 characters)
+backend/app/pulseway/client.py:175:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:177:80: E501 line too long (104 > 79 characters)
+backend/app/pulseway/client.py:183:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:187:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:188:77: W291 trailing whitespace
+backend/app/pulseway/client.py:197:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:199:80: E501 line too long (108 > 79 characters)
+backend/app/pulseway/client.py:205:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:209:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:210:80: E501 line too long (84 > 79 characters)
+backend/app/pulseway/client.py:211:80: E501 line too long (123 > 79 characters)
+backend/app/pulseway/client.py:221:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:223:80: E501 line too long (112 > 79 characters)
+backend/app/pulseway/client.py:229:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:233:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:234:80: E501 line too long (94 > 79 characters)
+backend/app/pulseway/client.py:235:27: E128 continuation line under-indented for visual indent
+backend/app/pulseway/client.py:245:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:249:1: W293 blank line contains whitespace
+backend/app/pulseway/client.py:254:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:7:52: W291 trailing whitespace
+backend/app/services/data_sync.py:14:1: E302 expected 2 blank lines, found 1
+backend/app/services/data_sync.py:16:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:20:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:24:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:36:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:41:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:45:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:52:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:54:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:57:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:68:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:71:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:78:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:82:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:88:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:90:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:93:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:107:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:110:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:117:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:121:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:127:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:129:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:132:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:140:80: E501 line too long (82 > 79 characters)
+backend/app/services/data_sync.py:141:80: E501 line too long (86 > 79 characters)
+backend/app/services/data_sync.py:148:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:151:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:158:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:162:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:169:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:174:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:178:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:181:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:186:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:189:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:194:80: E501 line too long (84 > 79 characters)
+backend/app/services/data_sync.py:199:80: E501 line too long (104 > 79 characters)
+backend/app/services/data_sync.py:201:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:206:80: E501 line too long (114 > 79 characters)
+backend/app/services/data_sync.py:209:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:216:80: E501 line too long (82 > 79 characters)
+backend/app/services/data_sync.py:228:80: E501 line too long (80 > 79 characters)
+backend/app/services/data_sync.py:230:80: E501 line too long (89 > 79 characters)
+backend/app/services/data_sync.py:231:80: E501 line too long (89 > 79 characters)
+backend/app/services/data_sync.py:232:80: E501 line too long (85 > 79 characters)
+backend/app/services/data_sync.py:245:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:248:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:255:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:259:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:264:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:267:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:274:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:276:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:282:80: E501 line too long (80 > 79 characters)
+backend/app/services/data_sync.py:285:80: E501 line too long (82 > 79 characters)
+backend/app/services/data_sync.py:289:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:291:80: E501 line too long (95 > 79 characters)
+backend/app/services/data_sync.py:293:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:296:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:303:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:307:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:311:80: E501 line too long (92 > 79 characters)
+backend/app/services/data_sync.py:313:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:315:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:318:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:326:80: E501 line too long (121 > 79 characters)
+backend/app/services/data_sync.py:329:80: E501 line too long (115 > 79 characters)
+backend/app/services/data_sync.py:332:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:341:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:344:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:351:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:355:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:361:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:363:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:366:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:380:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:383:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:390:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:394:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:400:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:402:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:405:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:412:80: E501 line too long (106 > 79 characters)
+backend/app/services/data_sync.py:415:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:431:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:434:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:441:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:445:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:451:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:453:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:456:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:463:80: E501 line too long (110 > 79 characters)
+backend/app/services/data_sync.py:466:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:479:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:482:1: W293 blank line contains whitespace
+backend/app/services/data_sync.py:488:23: W292 no newline at end of file
+backend/app/setup.py:11:1: E302 expected 2 blank lines, found 1
+backend/app/setup.py:15:1: W293 blank line contains whitespace
+backend/app/setup.py:19:1: W293 blank line contains whitespace
+backend/app/setup.py:24:1: W293 blank line contains whitespace
+backend/app/setup.py:28:1: E302 expected 2 blank lines, found 1
+backend/app/setup.py:31:1: W293 blank line contains whitespace
+backend/app/setup.py:36:1: E302 expected 2 blank lines, found 1
+backend/app/setup.py:40:1: W293 blank line contains whitespace
+backend/app/setup.py:51:1: W293 blank line contains whitespace
+backend/app/setup.py:54:1: E302 expected 2 blank lines, found 1
+backend/app/setup.py:57:1: W293 blank line contains whitespace
+backend/app/setup.py:66:1: E302 expected 2 blank lines, found 1
+backend/app/setup.py:69:1: W293 blank line contains whitespace
+backend/app/setup.py:75:1: W293 blank line contains whitespace
+backend/app/setup.py:83:1: E302 expected 2 blank lines, found 1
+backend/app/setup.py:87:1: W293 blank line contains whitespace
+backend/app/setup.py:90:1: W293 blank line contains whitespace
+backend/app/setup.py:92:1: W293 blank line contains whitespace
+backend/app/setup.py:95:1: W293 blank line contains whitespace
+backend/app/setup.py:98:1: W293 blank line contains whitespace
+backend/app/setup.py:101:1: W293 blank line contains whitespace
+backend/app/setup.py:109:1: E305 expected 2 blank lines after class or function definition, found 1

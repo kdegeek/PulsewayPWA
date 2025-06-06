@@ -2,10 +2,10 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func, desc, and_, or_
-from typing import List, Optional, Dict, Any
+from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 from ..database import SessionLocal
-from ..models.database import Device, Notification, Organization, Site, Group
+from ..models.database import Device, Notification, Organization, Site
 from pydantic import BaseModel
 
 router = APIRouter()

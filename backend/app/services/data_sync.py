@@ -1,7 +1,5 @@
 # app/services/data_sync.py
 import asyncio
-from typing import List, Dict, Any, Optional
-from sqlalchemy.orm import sessionmaker
 from datetime import datetime, timezone
 import logging
 from ..database import SessionLocal

@@ -7,7 +7,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 import asyncio
 import json
 import logging
-from typing import List, Dict, Any
+from typing import List, Dict, Optional
 from datetime import datetime
 import os
 from pathlib import Path
@@ -67,7 +67,7 @@ class ConnectionManager:
             logger.error(f"Error sending message to client: {e}")
             self.disconnect(websocket)
 
-    async def broadcast(self, message: dict, event_type: str = None):
+    async def broadcast(self, message: dict, event_type: Optional[str] = None):
         """Broadcast message to all connected clients or filtered by subscription"""
         disconnected = []
         for connection in self.active_connections:
@@ -245,8 +245,8 @@ async def send_push_notification(
     title: str,
     body: str,
     priority: str = "normal",
-    device_id: str = None,
-    url: str = None
+    device_id: Optional[str] = None,
+    url: Optional[str] = None
 ):
     """Send push notification to all connected clients"""
     

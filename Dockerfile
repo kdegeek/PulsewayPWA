@@ -1,4 +1,3 @@
-# Dockerfile
 FROM python:3.11-slim
 
 # Set environment variables
@@ -21,7 +20,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY . .
+COPY ./backend/ /app/
 
 # Create directory for SQLite database
 RUN mkdir -p /app/data
@@ -35,52 +34,6 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 
 # Run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-
-# docker-compose.yml
-version: '3.8'
-
-services:
-  pulseway-backend:
-    build: .
-    container_name: pulseway-backend
-    ports:
-      - "8000:8000"
-    environment:
-      - PULSEWAY_TOKEN_ID=${PULSEWAY_TOKEN_ID}
-      - PULSEWAY_TOKEN_SECRET=${PULSEWAY_TOKEN_SECRET}
-      - PULSEWAY_BASE_URL=${PULSEWAY_BASE_URL:-https://api.pulseway.com/v3/}
-      - DATABASE_URL=sqlite:///./data/pulseway.db
-      - LOG_LEVEL=${LOG_LEVEL:-INFO}
-    volumes:
-      - pulseway_data:/app/data
-      - ./logs:/app/logs
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-volumes:
-  pulseway_data:
-    driver: local
-
-# docker-compose.dev.yml - Development override
-version: '3.8'
-
-services:
-  pulseway-backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - .:/app
-      - pulseway_data:/app/data
-    environment:
-      - DEBUG=true
-      - RELOAD=true
-    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 # Dockerfile.dev - Development Dockerfile
 FROM python:3.11-slim

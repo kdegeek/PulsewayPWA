@@ -1,0 +1,22 @@
+MyPy Detailed Error Report:
+==================================================
+
+Errors for: backend/app/pulseway/client.py
+--------------------------------------------------
+backend/app/pulseway/client.py:74: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:103: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:141: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:153: error: Incompatible types in assignment (expression has type "list[dict[Any, Any]]", target has type "str")  [assignment]
+backend/app/pulseway/client.py:172: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:186: error: Incompatible types in assignment (expression has type "str", target has type "list[str]")  [assignment]
+backend/app/pulseway/client.py:194: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+backend/app/pulseway/client.py:208: error: Incompatible types in assignment (expression has type "str", target has type "list[str]")  [assignment]
+backend/app/pulseway/client.py:210: error: Incompatible types in assignment (expression has type "list[dict[Any, Any]]", target has type "list[str]")  [assignment]
+backend/app/pulseway/client.py:218: error: Incompatible types in assignment (expression has type "str", target has type "int")  [assignment]
+Found 10 errors in 1 file (checked 1 source file)
+
+Errors for: backend/app/api/monitoring.py
+--------------------------------------------------
+Success: no issues found in 1 source file
+
+==================================================
