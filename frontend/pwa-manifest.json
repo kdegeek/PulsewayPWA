@@ -2,7 +2,7 @@
   "name": "Pulseway Dashboard",
   "short_name": "Pulseway",
   "description": "Self-hosted Pulseway monitoring dashboard for IT administrators",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.1",
   "start_url": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone"],
