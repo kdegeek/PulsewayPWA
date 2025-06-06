@@ -9,7 +9,7 @@ services:
     - ./backend:/app
     environment:
     - DEBUG=true
-    - RELOAD=true
+    # RELOAD is handled by the --reload flag in the command
     command:
     - uvicorn
     - app.main:app

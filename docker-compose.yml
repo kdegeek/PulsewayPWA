@@ -10,7 +10,7 @@ services:
       - PULSEWAY_TOKEN_ID=${PULSEWAY_TOKEN_ID}
       - PULSEWAY_TOKEN_SECRET=${PULSEWAY_TOKEN_SECRET}
       - PULSEWAY_BASE_URL=${PULSEWAY_BASE_URL:-https://api.pulseway.com/v3/}
-      - DATABASE_URL=sqlite:///./data/pulseway.db
+      # DATABASE_URL is managed by the application's settings (config.py), which reads from .env
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
     volumes:
       - pulseway_data:/app/data
