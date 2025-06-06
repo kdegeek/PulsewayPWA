@@ -1,0 +1,183 @@
+{
+  "name": "Pulseway Dashboard",
+  "short_name": "Pulseway",
+  "description": "Self-hosted Pulseway monitoring dashboard for IT administrators",
+  "version": "1.0.0",
+  "start_url": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "theme_color": "#0a0a0a",
+  "background_color": "#0a0a0a",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["productivity", "utilities", "business"],
+  "screenshots": [
+    {
+      "src": "/screenshots/dashboard-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Main dashboard view"
+    },
+    {
+      "src": "/screenshots/dashboard-mobile.png", 
+      "sizes": "390x844",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Mobile dashboard view"
+    },
+    {
+      "src": "/screenshots/devices-list.png",
+      "sizes": "1920x1080", 
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Device management interface"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View system overview and statistics",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/icon-dashboard-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Devices",
+      "short_name": "Devices", 
+      "description": "Manage and monitor devices",
+      "url": "/devices",
+      "icons": [
+        {
+          "src": "/icon-devices-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Alerts",
+      "short_name": "Alerts",
+      "description": "View notifications and alerts",
+      "url": "/notifications",
+      "icons": [
+        {
+          "src": "/icon-alerts-96.png",
+          "sizes": "96x96", 
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Scripts",
+      "short_name": "Scripts",
+      "description": "Execute automation scripts",
+      "url": "/scripts",
+      "icons": [
+        {
+          "src": "/icon-scripts-96.png",
+          "sizes": "96x96",
+          "type": "image/png" 
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "application/json",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "file_handlers": [
+    {
+      "action": "/import",
+      "accept": {
+        "application/json": [".json"],
+        "text/csv": [".csv"],
+        "text/plain": [".txt", ".log"]
+      }
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "pulseway",
+      "url": "/handle?protocol=%s"
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "handle_links": "preferred",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://github.com/yourusername/pulseway-dashboard"
+    }
+  ],
+  "prefer_related_applications": false
+}

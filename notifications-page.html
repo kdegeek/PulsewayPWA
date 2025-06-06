@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Pulseway Dashboard</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0a0a0a">
+    
+    <style>
+        :root {
+            --primary-glow: #00f5ff;
+            --secondary-glow: #ff00ff;
+            --success-glow: #00ff88;
+            --warning-glow: #ff8800;
+            --error-glow: #ff0055;
+            --bg-primary: #0a0a0a;
+            --bg-glass: rgba(15, 15, 25, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-glow: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.3) 0%, transparent 50%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass:hover {
+            box-shadow: 0 12px 40px rgba(0, 245, 255, 0.1);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(10, 10, 20, 0.9);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-button:hover, .nav-button.active {
+            background: rgba(0, 245, 255, 0.1);
+            color: var(--primary-glow);
+        }
+
+        .logo {
+            color: var(--primary-glow);
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-glow);
+        }
+
+        .action-button {
+            background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 245, 255, 0.4);
+        }
+
+        .action-button.danger {
+            background: linear-gradient(45deg, var(--error-glow), #ff3366);
+        }
+
+        .action-button.danger:hover {
+            box-shadow: 0 8px 25px rgba(255, 0, 85, 0.4);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-critical { color: var(--error-glow); }
+        .stat-elevated { color: var(--warning-glow); }
+        .stat-normal { color: var(--primary-glow); }
+        .stat-low { color: var(--success-glow); }
+
+        /* Filters */
+        .filters {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .filter-input, .filter-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+        }
+
+        /* Notification List */
+        .notification-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        .notification-list {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 1.5rem;
+            border-left: 4px solid;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .notification-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification-item.critical {
+            border-left-color: var(--error-glow);
+            background: linear-gradient(90deg, rgba(255, 0, 85, 0.1) 0%, var(--bg-glass) 20%);
+        }
+
+        .notification-item.elevated {
+            border-left-color: var(--warning-glow);
+            background: linear-gradient(90deg, rgba(255, 136, 0, 0.1) 0%, var(--bg-glass) 20%);
+        }
+
+        .notification-item.normal {
+            border-left-color: var(--primary-glow);
+            background: linear-gradient(90deg, rgba(0, 245, 255, 0.1) 0%, var(--bg-glass) 20%);
+        }
+
+        .notification-item.low {
+            border-left-color: var(--success-glow);
+            background: linear-gradient(90deg, rgba(0, 255, 136, 0.1) 0%, var(--bg-glass) 20%);
+        }
+
+        .notification-item.read {
+            opacity: 0.7;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .notification-priority {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 1px solid;
+        }
+
+        .priority-critical {
+            background: rgba(255, 0, 85, 0.2);
+            color: var(--error-glow);
+            border-color: var(--error-glow);
+        }
+
+        .priority-elevated {
+            background: rgba(255, 136, 0, 0.2);
+            color: var(--warning-glow);
+            border-color: var(--warning-glow);
+        }
+
+        .priority-normal {
+            background: rgba(0, 245, 255, 0.2);
+            color: var(--primary-glow);
+            border-color: var(--primary-glow);
+        }
+
+        .priority-low {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--success-glow);
+            border-color: var(--success-glow);
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification-message {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-device {
+            font-size: 0.875rem;
+            color: var(--primary-glow);
+            font-weight: bold;
+        }
+
+        .notification-actions {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification-item:hover .notification-actions {
+            opacity: 1;
+        }
+
+        .action-icon {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .action-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .action-icon.delete:hover {
+            background: var(--error-glow);
+            color: white;
+        }
+
+        /* Notification Details Panel */
+        .details-panel {
+            position: sticky;
+            top: calc(80px + 2rem);
+            height: fit-content;
+        }
+
+        .panel-content {
+            padding: 2rem;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary-glow);
+            margin-bottom: 1rem;
+        }
+
+        .panel-empty {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 3rem 2rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-glow);
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-weight: bold;
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .bulk-actions.show {
+            display: flex;
+        }
+
+        .bulk-count {
+            color: var(--primary-glow);
+            font-weight: bold;
+        }
+
+        .bulk-action-btn {
+            background: none;
+            border: 1px solid var(--border-glow);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .bulk-action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-glow);
+        }
+
+        .bulk-action-btn.danger:hover {
+            background: var(--error-glow);
+            border-color: var(--error-glow);
+            color: white;
+        }
+
+        /* Loading states */
+        .loading, .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 245, 255, 0.3);
+            border-top: 3px solid var(--primary-glow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Live indicator */
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--success-glow);
+            font-size: 0.875rem;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success-glow);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .notification-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .details-panel {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .notification-actions {
+                position: static;
+                opacity: 1;
+                margin-top: 1rem;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="/" class="logo glow-text">🛡️ Pulseway</a>
+            <nav style="display: flex; gap: 0.5rem;">
+                <a href="/" class="nav-button">📊 Dashboard</a>
+                <a href="/devices" class="nav-button">💻 Devices</a>
+                <a href="/scripts" class="nav-button">⚡ Scripts</a>
+                <a href="/notifications" class="nav-button active">🔔 Alerts</a>
+                <a href="/settings" class="nav-button">⚙️ Settings</a>
+            </nav>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>Live Updates</span>
+            </div>
+            <span style="color: var(--text-secondary); font-size: 0.875rem;" id="notificationCount">Loading...</span>
+            <button class="nav-button" onclick="refreshNotifications()">🔄 Refresh</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title glow-text">Notifications & Alerts</h1>
+            <div style="display: flex; gap: 1rem;">
+                <button class="action-button" onclick="markAllAsRead()">
+                    ✅ Mark All Read
+                </button>
+                <button class="action-button danger" onclick="clearAllNotifications()">
+                    🗑️ Clear All
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="glass stat-card">
+                <div class="stat-value stat-critical" id="criticalCount">0</div>
+                <div class="stat-label">Critical Alerts</div>
+            </div>
+            <div class="glass stat-card">
+                <div class="stat-value stat-elevated" id="elevatedCount">0</div>
+                <div class="stat-label">Elevated Alerts</div>
+            </div>
+            <div class="glass stat-card">
+                <div class="stat-value stat-normal" id="normalCount">0</div>
+                <div class="stat-label">Normal Alerts</div>
+            </div>
+            <div class="glass stat-card">
+                <div class="stat-value stat-low" id="lowCount">0</div>
+                <div class="stat-label">Low Priority</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="glass filters">
+            <div class="filter-group">
+                <label class="filter-label">Search Notifications</label>
+                <input type="text" class="filter-input" id="searchInput" placeholder="Message text, device name...">
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Priority</label>
+                <select class="filter-select" id="priorityFilter">
+                    <option value="">All Priorities</option>
+                    <option value="critical">Critical</option>
+                    <option value="elevated">Elevated</option>
+                    <option value="normal">Normal</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Notifications</option>
+                    <option value="unread">Unread Only</option>
+                    <option value="read">Read Only</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Time Range</label>
+                <select class="filter-select" id="timeFilter">
+                    <option value="">All Time</option>
+                    <option value="1h">Last Hour</option>
+                    <option value="24h">Last 24 Hours</option>
+                    <option value="7d">Last 7 Days</option>
+                    <option value="30d">Last 30 Days</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions" id="bulkActions">
+            <span class="bulk-count" id="bulkCount">0 selected</span>
+            <button class="bulk-action-btn" onclick="markSelectedAsRead()">Mark as Read</button>
+            <button class="bulk-action-btn danger" onclick="deleteSelected()">Delete Selected</button>
+            <button class="bulk-action-btn" onclick="clearSelection()">Clear Selection</button>
+        </div>
+
+        <!-- Notification Container -->
+        <div class="notification-container">
+            <!-- Notification List -->
+            <div>
+                <div class="glass notification-list" id="notificationList">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span>Loading notifications...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details Panel -->
+            <div class="details-panel">
+                <div class="glass">
+                    <div class="panel-content" id="detailsPanel">
+                        <div class="panel-empty">
+                            <h3 style="margin-bottom: 1rem;">📋 Notification Details</h3>
+                            <p>Select a notification to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let notifications = [];
+        let filteredNotifications = [];
+        let selectedNotifications = new Set();
+        let selectedNotification = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNotifications();
+            setupWebSocket();
+            setupEventListeners();
+            
+            // Request notification permission
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        });
+
+        // Setup WebSocket for real-time updates
+        function setupWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+            
+            ws.onopen = function() {
+                console.log('WebSocket connected');
+                ws.send(JSON.stringify({
+                    type: 'SUBSCRIBE',
+                    events: ['notifications', 'push_notifications']
+                }));
+            };
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'PUSH_NOTIFICATION') {
+                    handlePushNotification(data.notification);
+                } else if (data.type === 'NOTIFICATION_UPDATE') {
+                    loadNotifications();
+                }
+            };
+        }
+
+        // Handle push notifications
+        function handlePushNotification(notification) {
+            // Show browser notification if permission granted
+            if (Notification.permission === 'granted') {
+                const browserNotification = new Notification(notification.title, {
+                    body: notification.body,
+                    icon: '/icon-192.png',
+                    badge: '/icon-192.png',
+                    tag: notification.tag,
+                    vibrate: notification.priority === 'critical' ? [200, 100, 200] : [100],
+                    requireInteraction: notification.priority === 'critical'
+                });
+                
+                browserNotification.onclick = function() {
+                    window.focus();
+                    if (notification.device_id) {
+                        // Navigate to device details
+                        window.location.href = `/devices#${notification.device_id}`;
+                    }
+                    browserNotification.close();
+                };
+            }
+            
+            // Refresh notifications list
+            loadNotifications();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+            document.getElementById('priorityFilter').addEventListener('change', applyFilters);
+            document.getElementById('statusFilter').addEventListener('change', applyFilters);
+            document.getElementById('timeFilter').addEventListener('change', applyFilters);
+        }
+
+        // Load notifications from API
+        async function loadNotifications() {
+            try {
+                const response = await fetch('/api/notifications/?limit=500');
+                const data = await response.json();
+                notifications = data;
+                
+                applyFilters();
+                updateStats();
+                updateNotificationCount();
+                
+            } catch (error) {
+                console.error('Failed to load notifications:', error);
+                showError('Failed to load notifications');
+            }
+        }
+
+        // Apply filters and render notifications
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const priority = document.getElementById('priorityFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const timeRange = document.getElementById('timeFilter').value;
+            
+            filteredNotifications = notifications.filter(notification => {
+                // Search filter
+                if (search && !notification.message.toLowerCase().includes(search)) {
+                    return false;
+                }
+                
+                // Priority filter
+                if (priority && notification.priority !== priority) {
+                    return false;
+                }
+                
+                // Status filter
+                if (status === 'read' && !notification.read) return false;
+                if (status === 'unread' && notification.read) return false;
+                
+                // Time filter
+                if (timeRange && !isWithinTimeRange(notification.datetime, timeRange)) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            renderNotifications();
+        }
+
+        // Check if notification is within time range
+        function isWithinTimeRange(datetime, range) {
+            if (!datetime) return true;
+            
+            const now = new Date();
+            const notificationTime = new Date(datetime);
+            const diffMs = now - notificationTime;
+            
+            switch (range) {
+                case '1h': return diffMs <= 3600000;
+                case '24h': return diffMs <= 86400000;
+                case '7d': return diffMs <= 604800000;
+                case '30d': return diffMs <= 2592000000;
+                default: return true;
+            }
+        }
+
+        // Render notifications list
+        function renderNotifications() {
+            const container = document.getElementById('notificationList');
+            
+            if (filteredNotifications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3 style="margin-bottom: 1rem;">📭 No Notifications</h3>
+                        <p>No notifications match your current filters.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort by datetime (newest first)
+            const sorted = [...filteredNotifications].sort((a, b) => {
+                const dateA = new Date(a.datetime || 0);
+                const dateB = new Date(b.datetime || 0);
+                return dateB - dateA;
+            });
+            
+            container.innerHTML = sorted.map(notification => createNotificationElement(notification)).join('');
+        }
+
+        // Create notification element
+        function createNotificationElement(notification) {
+            const isSelected = selectedNotifications.has(notification.id);
+            const timeAgo = formatTimeAgo(notification.datetime);
+            
+            return `
+                <div class="notification-item ${notification.priority} ${notification.read ? 'read' : ''}" 
+                     data-id="${notification.id}" onclick="selectNotification(${notification.id})">
+                    
+                    <div class="notification-header">
+                        <input type="checkbox" ${isSelected ? 'checked' : ''} 
+                               onchange="toggleNotificationSelection(${notification.id})" 
+                               onclick="event.stopPropagation()">
+                        <div class="notification-priority priority-${notification.priority}">
+                            ${notification.priority}
+                        </div>
+                        <div class="notification-time">
+                            🕒 ${timeAgo}
+                            ${!notification.read ? '<span style="color: var(--primary-glow);">●</span>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="notification-message">${notification.message}</div>
+                    
+                    ${notification.device_identifier ? `
+                        <div class="notification-device">📱 Device: ${notification.device_identifier}</div>
+                    ` : ''}
+                    
+                    <div class="notification-actions">
+                        <button class="action-icon" onclick="toggleReadStatus(${notification.id}); event.stopPropagation()" 
+                                title="${notification.read ? 'Mark as unread' : 'Mark as read'}">
+                            ${notification.read ? '📧' : '✅'}
+                        </button>
+                        <button class="action-icon delete" onclick="deleteNotification(${notification.id}); event.stopPropagation()" 
+                                title="Delete notification">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Select notification for details view
+        function selectNotification(notificationId) {
+            selectedNotification = notifications.find(n => n.id === notificationId);
+            if (selectedNotification) {
+                renderNotificationDetails();
+                
+                // Mark as read if unread
+                if (!selectedNotification.read) {
+                    markAsRead(notificationId);
+                }
+            }
+        }
+
+        // Render notification details
+        function renderNotificationDetails() {
+            const panel = document.getElementById('detailsPanel');
+            
+            if (!selectedNotification) {
+                panel.innerHTML = `
+                    <div class="panel-empty">
+                        <h3 style="margin-bottom: 1rem;">📋 Notification Details</h3>
+                        <p>Select a notification to view details</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const n = selectedNotification;
+            
+            panel.innerHTML = `
+                <div class="panel-title">${getPriorityIcon(n.priority)} Notification Details</div>
+                
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Priority</div>
+                        <div class="detail-value">
+                            <span class="notification-priority priority-${n.priority}">${n.priority}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Time</div>
+                        <div class="detail-value">${formatFullDateTime(n.datetime)}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">${n.read ? '✅ Read' : '📧 Unread'}</div>
+                    </div>
+                    
+                    ${n.device_identifier ? `
+                    <div class="detail-item">
+                        <div class="detail-label">Device</div>
+                        <div class="detail-value">
+                            <a href="/devices#${n.device_identifier}" style="color: var(--primary-glow);">
+                                📱 ${n.device_identifier}
+                            </a>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <div class="detail-label">Message</div>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-glow); margin-top: 0.5rem; line-height: 1.6;">
+                        ${n.message}
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button class="action-button" onclick="toggleReadStatus(${n.id})" style="flex: 1;">
+                        ${n.read ? '📧 Mark Unread' : '✅ Mark Read'}
+                    </button>
+                    <button class="action-button danger" onclick="deleteNotification(${n.id})" style="flex: 1;">
+                        🗑️ Delete
+                    </button>
+                </div>
+            `;
+        }
+
+        // Toggle notification selection
+        function toggleNotificationSelection(notificationId) {
+            if (selectedNotifications.has(notificationId)) {
+                selectedNotifications.delete(notificationId);
+            } else {
+                selectedNotifications.add(notificationId);
+            }
+            
+            updateBulkActions();
+        }
+
+        // Update bulk actions visibility
+        function updateBulkActions() {
+            const bulkActions = document.getElementById('bulkActions');
+            const bulkCount = document.getElementById('bulkCount');
+            
+            if (selectedNotifications.size > 0) {
+                bulkActions.classList.add('show');
+                bulkCount.textContent = `${selectedNotifications.size} selected`;
+            } else {
+                bulkActions.classList.remove('show');
+            }
+        }
+
+        // Mark notification as read/unread
+        async function toggleReadStatus(notificationId) {
+            try {
+                const notification = notifications.find(n => n.id === notificationId);
+                if (!notification) return;
+                
+                // Update locally first for immediate feedback
+                notification.read = !notification.read;
+                
+                // Update in database (this would be a real API call)
+                // await fetch(`/api/notifications/${notificationId}/read`, { method: 'POST' });
+                
+                applyFilters();
+                if (selectedNotification && selectedNotification.id === notificationId) {
+                    renderNotificationDetails();
+                }
+                updateStats();
+                
+            } catch (error) {
+                console.error('Failed to update read status:', error);
+            }
+        }
+
+        // Mark as read
+        async function markAsRead(notificationId) {
+            const notification = notifications.find(n => n.id === notificationId);
+            if (notification && !notification.read) {
+                notification.read = true;
+                applyFilters();
+                updateStats();
+            }
+        }
+
+        // Delete notification
+        async function deleteNotification(notificationId) {
+            if (!confirm('Are you sure you want to delete this notification?')) return;
+            
+            try {
+                // Remove from local array
+                notifications = notifications.filter(n => n.id !== notificationId);
+                selectedNotifications.delete(notificationId);
+                
+                // Remove from API (this would be a real API call)
+                // await fetch(`/api/notifications/${notificationId}`, { method: 'DELETE' });
+                
+                applyFilters();
+                updateStats();
+                updateBulkActions();
+                
+                // Clear details if this notification was selected
+                if (selectedNotification && selectedNotification.id === notificationId) {
+                    selectedNotification = null;
+                    renderNotificationDetails();
+                }
+                
+            } catch (error) {
+                console.error('Failed to delete notification:', error);
+            }
+        }
+
+        // Bulk actions
+        function markSelectedAsRead() {
+            selectedNotifications.forEach(id => {
+                const notification = notifications.find(n => n.id === id);
+                if (notification) {
+                    notification.read = true;
+                }
+            });
+            
+            clearSelection();
+            applyFilters();
+            updateStats();
+        }
+
+        function deleteSelected() {
+            if (!confirm(`Are you sure you want to delete ${selectedNotifications.size} notification(s)?`)) return;
+            
+            notifications = notifications.filter(n => !selectedNotifications.has(n.id));
+            clearSelection();
+            applyFilters();
+            updateStats();
+        }
+
+        function clearSelection() {
+            selectedNotifications.clear();
+            updateBulkActions();
+            applyFilters();
+        }
+
+        function markAllAsRead() {
+            if (!confirm('Mark all notifications as read?')) return;
+            
+            notifications.forEach(n => n.read = true);
+            applyFilters();
+            updateStats();
+        }
+
+        function clearAllNotifications() {
+            if (!confirm('Delete all notifications? This action cannot be undone.')) return;
+            
+            notifications = [];
+            selectedNotifications.clear();
+            selectedNotification = null;
+            applyFilters();
+            updateStats();
+            updateBulkActions();
+            renderNotificationDetails();
+        }
+
+        // Update statistics
+        function updateStats() {
+            const stats = {
+                critical: notifications.filter(n => n.priority === 'critical').length,
+                elevated: notifications.filter(n => n.priority === 'elevated').length,
+                normal: notifications.filter(n => n.priority === 'normal').length,
+                low: notifications.filter(n => n.priority === 'low').length
+            };
+            
+            document.getElementById('criticalCount').textContent = stats.critical;
+            document.getElementById('elevatedCount').textContent = stats.elevated;
+            document.getElementById('normalCount').textContent = stats.normal;
+            document.getElementById('lowCount').textContent = stats.low;
+        }
+
+        // Update notification count
+        function updateNotificationCount() {
+            const unread = notifications.filter(n => !n.read).length;
+            document.getElementById('notificationCount').textContent = 
+                `${notifications.length} total, ${unread} unread`;
+        }
+
+        // Refresh notifications
+        async function refreshNotifications() {
+            await loadNotifications();
+        }
+
+        // Utility functions
+        function formatTimeAgo(datetime) {
+            if (!datetime) return 'Unknown';
+            
+            const now = new Date();
+            const date = new Date(datetime);
+            const diffMs = now - date;
+            
+            if (diffMs < 60000) return 'Just now';
+            if (diffMs < 3600000) return `${Math.floor(diffMs / 60000)}m ago`;
+            if (diffMs < 86400000) return `${Math.floor(diffMs / 3600000)}h ago`;
+            if (diffMs < 604800000) return `${Math.floor(diffMs / 86400000)}d ago`;
+            return date.toLocaleDateString();
+        }
+
+        function formatFullDateTime(datetime) {
+            if (!datetime) return 'Unknown';
+            return new Date(datetime).toLocaleString();
+        }
+
+        function getPriorityIcon(priority) {
+            switch (priority) {
+                case 'critical': return '🚨';
+                case 'elevated': return '⚠️';
+                case 'normal': return 'ℹ️';
+                case 'low': return '💡';
+                default: return '📝';
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function showError(message) {
+            console.error(message);
+            // TODO: Implement toast notification
+        }
+
+        // Initialize with mock data for demo
+        setTimeout(() => {
+            notifications = [
+                {
+                    id: 1,
+                    message: 'High CPU usage detected on server. Current usage: 95%',
+                    priority: 'critical',
+                    datetime: new Date(Date.now() - 120000).toISOString(),
+                    read: false,
+                    device_identifier: 'SRV-WEB-01'
+                },
+                {
+                    id: 2,
+                    message: 'Low disk space warning. Only 2.1 GB remaining',
+                    priority: 'elevated',
+                    datetime: new Date(Date.now() - 300000).toISOString(),
+                    read: false,
+                    device_identifier: 'WS-ADMIN-15'
+                },
+                {
+                    id: 3,
+                    message: 'Memory usage above threshold (78%)',
+                    priority: 'elevated',
+                    datetime: new Date(Date.now() - 720000).toISOString(),
+                    read: true,
+                    device_identifier: 'SRV-DB-02'
+                },
+                {
+                    id: 4,
+                    message: 'Windows updates available for installation',
+                    priority: 'normal',
+                    datetime: new Date(Date.now() - 1080000).toISOString(),
+                    read: true,
+                    device_identifier: 'WS-DEV-08'
+                },
+                {
+                    id: 5,
+                    message: 'Scheduled backup completed successfully',
+                    priority: 'low',
+                    datetime: new Date(Date.now() - 3600000).toISOString(),
+                    read: true,
+                    device_identifier: 'SRV-BACKUP-01'
+                }
+            ];
+            
+            applyFilters();
+            updateStats();
+            updateNotificationCount();
+        }, 500);
+    </script>
+</body>
+</html>
