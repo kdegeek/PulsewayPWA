@@ -1,18 +1,26 @@
+# Dockerfile.dev - Development Dockerfile
 FROM python:3.11-slim
 
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app
+    PYTHONPATH=/app # PYTHONPATH=/app might be more relevant here due to volume mount
 
+# Create a non-root user and group for development
+RUN groupadd -r appgroup && useradd --no-log-init -r -g appgroup appuser
+
+# Set work directory
 WORKDIR /app
 
 # Install system dependencies including curl for health checks
+# Also add sudo to allow non-root user to install global packages if necessary (use with caution)
 RUN apt-get update && apt-get install -y \
     gcc \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install dependencies
+# This will be run as root, before switching to appuser
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -24,11 +32,21 @@ RUN pip install --no-cache-dir \
     flake8 \
     mypy
 
-# Create data directory
-RUN mkdir -p /app/data /app/logs
+# Create data and logs directory, set ownership
+# These directories are mounted from host, but ensure they exist with correct ownership if not.
+RUN mkdir -p /app/data /app/logs && chown -R appuser:appgroup /app/data /app/logs
+# Change ownership of /app as well for consistency, though most content is volume mounted
+RUN chown -R appuser:appgroup /app
 
 # Expose port
 EXPOSE 8000
+
+# Switch to non-root user for running the application
+USER appuser
+
+# Healthcheck for dev
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/api/health || exit 1
 
 # Default command (can be overridden in docker-compose.dev.yml)
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
