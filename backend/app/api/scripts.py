@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
 from ..database import SessionLocal
 from ..models.database import Script, Device
-from ..pulseway.client import PulsewayClient
+from ..pulseway.client import PulsewayClient, PulsewayNotFoundError, PulsewayAPIError, PulsewayClientError # Import specific exceptions
+from ..exceptions import ExternalAPIError # Base for some Pulseway errors
 from pydantic import BaseModel
 from datetime import datetime
 from ..security import get_current_active_api_key
@@ -148,9 +149,29 @@ async def get_script(
                     output_variables=script_data.get('OutputVariables'),
                     script_items=script_data.get('ScriptItems')
                 )
-        except Exception as e:
-            raise HTTPException(status_code=404, detail=f"Script not found: {str(e)}")
+            # If script_data is empty from Pulseway, it means not found.
+            raise HTTPException(status_code=404, detail="Script not found via Pulseway (no data).")
+        except PulsewayNotFoundError as e:
+            # Log this event if desired, then re-raise as HTTPException
+            # logger.info(f"Script {script_id} not found via Pulseway client: {e.detail}")
+            raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+        except PulsewayAPIError as e: # Catch other API errors from client
+            # logger.error(f"Pulseway API error fetching script {script_id}: {e.detail}", exc_info=True)
+            raise HTTPException(status_code=e.status_code, detail=f"Pulseway API error: {e.detail}") from e
+        except PulsewayClientError as e: # Catch other client errors (network, etc.)
+             # logger.error(f"Pulseway client error fetching script {script_id}: {e.detail}", exc_info=True)
+             raise HTTPException(status_code=e.status_code, detail=f"Pulseway client error: {e.detail}") from e
+        except Exception as e: # Catch any other unexpected error during Pulseway fetch
+             # logger.error(f"Unexpected error fetching script {script_id} from Pulseway: {str(e)}", exc_info=True)
+             raise HTTPException(status_code=500, detail=f"An unexpected error occurred while fetching from Pulseway: {str(e)}") from e
     
+    # If script was found locally, it's returned here.
+    # If not found locally, and Pulseway calls above didn't return or raised HTTPException,
+    # this means it wasn't found anywhere.
+    if not script: # This check is redundant if the above logic correctly raises or returns.
+                   # However, keeping it as a safeguard if API returns weirdly without exception.
+        raise HTTPException(status_code=404, detail="Script not found.")
+
     return script
 
 @router.post("/{script_id}/execute", response_model=ScriptExecutionResponse)
@@ -194,10 +215,14 @@ async def execute_script(
                 message="Script execution started successfully"
             )
         else:
-            raise HTTPException(status_code=500, detail="Failed to start script execution")
+            raise HTTPException(status_code=500, detail="Failed to start script execution (no execution ID returned by Pulseway)")
             
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Script execution failed: {str(e)}")
+    except PulsewayClientError as e:
+        # logger.error(f"Pulseway client error during script execution for {script_id} on {execution_request.device_identifier}: {e.detail}", exc_info=True)
+        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+    except Exception as e: # Catch any other unexpected error
+        # logger.error(f"Unexpected error during script execution for {script_id} on {execution_request.device_identifier}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Script execution failed unexpectedly: {str(e)}")
 
 @router.get("/{script_id}/executions/{device_id}")
 async def get_script_executions(
@@ -226,8 +251,12 @@ async def get_script_executions(
             "total_count": response.get('Meta', {}).get('TotalCount', len(executions_data))
         }
         
+    except PulsewayClientError as e:
+        # logger.error(f"Pulseway client error getting executions for script {script_id} on {device_id}: {e.detail}", exc_info=True)
+        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to get script executions: {str(e)}")
+        # logger.error(f"Unexpected error getting executions for script {script_id} on {device_id}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to get script executions unexpectedly: {str(e)}")
 
 @router.get("/{script_id}/executions/{device_id}/{execution_id}", response_model=ScriptExecutionDetail)
 async def get_script_execution_details(
@@ -257,13 +286,15 @@ async def get_script_execution_details(
         if execution_data.get('StartTime'):
             try:
                 start_time = datetime.fromisoformat(execution_data['StartTime'].replace('Z', '+00:00'))
-            except ValueError:
+            except ValueError: # Log parsing error if needed
+                # logger.warning(f"Could not parse StartTime for script execution {execution_id}: {execution_data.get('StartTime')}")
                 pass
         
         if execution_data.get('EndTime'):
             try:
                 end_time = datetime.fromisoformat(execution_data['EndTime'].replace('Z', '+00:00'))
-            except ValueError:
+            except ValueError: # Log parsing error if needed
+                # logger.warning(f"Could not parse EndTime for script execution {execution_id}: {execution_data.get('EndTime')}")
                 pass
         
         return ScriptExecutionDetail(
@@ -276,9 +307,15 @@ async def get_script_execution_details(
             exit_code=execution_data.get('ExitCode'),
             variable_outputs=execution_data.get('VariableOutputs')
         )
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to get script execution details: {str(e)}")
+    except PulsewayNotFoundError as e:
+        # logger.info(f"Script execution details not found for script {script_id}, device {device_id}, exec {execution_id}: {e.detail}")
+        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+    except PulsewayClientError as e: # Other Pulseway errors
+        # logger.error(f"Pulseway client error getting execution details for script {script_id}, device {device_id}, exec {execution_id}: {e.detail}", exc_info=True)
+        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+    except Exception as e: # Catch any other unexpected error
+        # logger.error(f"Unexpected error getting execution details for script {script_id}, device {device_id}, exec {execution_id}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to get script execution details unexpectedly: {str(e)}")
 
 @router.get("/categories/list")
 async def get_script_categories(db: Session = Depends(get_db)):
@@ -360,11 +397,18 @@ async def bulk_execute_script(
                     "device_id": device_id,
                     "error": "No execution ID returned"
                 })
-                
-        except Exception as e:
+        except PulsewayClientError as e: # Catch specific errors from client
+            # logger.warning(f"Pulseway client error during bulk execution for device {device_id}, script {script_id}: {e.detail}")
             failed_executions.append({
                 "device_id": device_id,
-                "error": str(e)
+                "error": e.detail, # Provide the error detail from the custom exception
+                "status_code": e.status_code
+            })
+        except Exception as e: # Catch any other unexpected error for this specific device
+            # logger.error(f"Unexpected error during bulk execution for device {device_id}, script {script_id}: {str(e)}", exc_info=True)
+            failed_executions.append({
+                "device_id": device_id,
+                "error": f"Unexpected error: {str(e)}"
             })
     
     return {

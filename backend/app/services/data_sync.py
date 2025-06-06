@@ -2,9 +2,11 @@
 import asyncio
 from typing import List, Dict, Any, Optional
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import SQLAlchemyError # Added
 from datetime import datetime, timezone
-import logging
+import logging # structlog will pick this up
 from ..database import SessionLocal
+from ..exceptions import DatabaseError, ExternalAPIError # Added
 from ..models.database import (
     Organization, Site, Group, Device, DeviceAsset, 
     Notification, Script, Task, Workflow
@@ -112,11 +114,21 @@ class DataSyncService:
             
             db.commit()
             logger.info(f"Synced organizations. Created: {created_count}, Updated: {updated_count}.")
-            
-        except Exception as e:
+
+        except SQLAlchemyError as e:
             db.rollback()
-            logger.error(f"Failed to sync organizations: {e}")
-            raise
+            logger.error("Database error during organizations sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Database error syncing organizations: {str(e)}") from e
+        except ExternalAPIError as e: # Catch errors from PulsewayClient explicitly if needed for special handling
+            db.rollback() # Rollback on API errors too if partial data shouldn't be committed
+            logger.error("External API error during organizations sync", error=str(e.detail), status_code=e.status_code, exc_info=True)
+            # Re-raise to be caught by main.py handlers or the caller
+            raise # Or wrap in a service-specific error if desired: raise DataSyncFailedError(...) from e
+        except Exception as e: # Catch any other unexpected errors
+            db.rollback()
+            logger.error("Unexpected error during organizations sync", error=str(e), exc_info=True)
+            # Consider raising a generic AppException or a specific DataSyncFailedError here
+            raise DatabaseError(detail=f"Unexpected error syncing organizations: {str(e)}") from e # Or a more generic error
         finally:
             db.close()
     
@@ -201,10 +213,18 @@ class DataSyncService:
             db.commit()
             logger.info(f"Synced sites. Created: {created_count}, Updated: {updated_count}.")
             
+        except SQLAlchemyError as e:
+            db.rollback()
+            logger.error("Database error during sites sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Database error syncing sites: {str(e)}") from e
+        except ExternalAPIError as e:
+            db.rollback()
+            logger.error("External API error during sites sync", error=str(e.detail), status_code=e.status_code, exc_info=True)
+            raise
         except Exception as e:
             db.rollback()
-            logger.error(f"Failed to sync sites: {e}")
-            raise
+            logger.error("Unexpected error during sites sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Unexpected error syncing sites: {str(e)}") from e
         finally:
             db.close()
     
@@ -297,10 +317,18 @@ class DataSyncService:
             db.commit()
             logger.info(f"Synced groups. Created: {created_count}, Updated: {updated_count}.")
             
+        except SQLAlchemyError as e:
+            db.rollback()
+            logger.error("Database error during groups sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Database error syncing groups: {str(e)}") from e
+        except ExternalAPIError as e:
+            db.rollback()
+            logger.error("External API error during groups sync", error=str(e.detail), status_code=e.status_code, exc_info=True)
+            raise
         except Exception as e:
             db.rollback()
-            logger.error(f"Failed to sync groups: {e}")
-            raise
+            logger.error("Unexpected error during groups sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Unexpected error syncing groups: {str(e)}") from e
         finally:
             db.close()
     
@@ -502,10 +530,18 @@ class DataSyncService:
             db.commit()
             logger.info(f"Synced devices. Created: {created_count}, Updated: {updated_count}.")
             
+        except SQLAlchemyError as e:
+            db.rollback()
+            logger.error("Database error during devices sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Database error syncing devices: {str(e)}") from e
+        except ExternalAPIError as e:
+            db.rollback()
+            logger.error("External API error during devices sync", error=str(e.detail), status_code=e.status_code, exc_info=True)
+            raise
         except Exception as e:
             db.rollback()
-            logger.error(f"Failed to sync devices: {e}")
-            raise
+            logger.error("Unexpected error during devices sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Unexpected error syncing devices: {str(e)}") from e
         finally:
             db.close()
     
@@ -593,10 +629,18 @@ class DataSyncService:
             db.commit()
             logger.info(f"Synced device assets. Created: {created_count}, Updated: {updated_count}.")
             
+        except SQLAlchemyError as e:
+            db.rollback()
+            logger.error("Database error during device assets sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Database error syncing device assets: {str(e)}") from e
+        except ExternalAPIError as e:
+            db.rollback()
+            logger.error("External API error during device assets sync", error=str(e.detail), status_code=e.status_code, exc_info=True)
+            raise
         except Exception as e:
             db.rollback()
-            logger.error(f"Failed to sync device assets: {e}")
-            raise
+            logger.error("Unexpected error during device assets sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Unexpected error syncing device assets: {str(e)}") from e
         finally:
             db.close()
     
@@ -688,10 +732,18 @@ class DataSyncService:
             db.commit()
             logger.info(f"Synced notifications. Created: {created_count}, Updated: {updated_count}.")
             
+        except SQLAlchemyError as e:
+            db.rollback()
+            logger.error("Database error during notifications sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Database error syncing notifications: {str(e)}") from e
+        except ExternalAPIError as e:
+            db.rollback()
+            logger.error("External API error during notifications sync", error=str(e.detail), status_code=e.status_code, exc_info=True)
+            raise
         except Exception as e:
             db.rollback()
-            logger.error(f"Failed to sync notifications: {e}")
-            raise
+            logger.error("Unexpected error during notifications sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Unexpected error syncing notifications: {str(e)}") from e
         finally:
             db.close()
     
@@ -776,10 +828,18 @@ class DataSyncService:
             db.commit()
             logger.info(f"Synced scripts. Created: {created_count}, Updated: {updated_count}.")
             
+        except SQLAlchemyError as e:
+            db.rollback()
+            logger.error("Database error during scripts sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Database error syncing scripts: {str(e)}") from e
+        except ExternalAPIError as e:
+            db.rollback()
+            logger.error("External API error during scripts sync", error=str(e.detail), status_code=e.status_code, exc_info=True)
+            raise
         except Exception as e:
             db.rollback()
-            logger.error(f"Failed to sync scripts: {e}")
-            raise
+            logger.error("Unexpected error during scripts sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Unexpected error syncing scripts: {str(e)}") from e
         finally:
             db.close()
     
@@ -891,10 +951,18 @@ class DataSyncService:
             db.commit()
             logger.info(f"Synced tasks. Created: {created_count}, Updated: {updated_count}.")
             
+        except SQLAlchemyError as e:
+            db.rollback()
+            logger.error("Database error during tasks sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Database error syncing tasks: {str(e)}") from e
+        except ExternalAPIError as e:
+            db.rollback()
+            logger.error("External API error during tasks sync", error=str(e.detail), status_code=e.status_code, exc_info=True)
+            raise
         except Exception as e:
             db.rollback()
-            logger.error(f"Failed to sync tasks: {e}")
-            raise
+            logger.error("Unexpected error during tasks sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Unexpected error syncing tasks: {str(e)}") from e
         finally:
             db.close()
     
@@ -992,9 +1060,17 @@ class DataSyncService:
             db.commit()
             logger.info(f"Synced workflows. Created: {created_count}, Updated: {updated_count}.")
             
+        except SQLAlchemyError as e:
+            db.rollback()
+            logger.error("Database error during workflows sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Database error syncing workflows: {str(e)}") from e
+        except ExternalAPIError as e:
+            db.rollback()
+            logger.error("External API error during workflows sync", error=str(e.detail), status_code=e.status_code, exc_info=True)
+            raise
         except Exception as e:
             db.rollback()
-            logger.error(f"Failed to sync workflows: {e}")
-            raise
+            logger.error("Unexpected error during workflows sync", error=str(e), exc_info=True)
+            raise DatabaseError(detail=f"Unexpected error syncing workflows: {str(e)}") from e
         finally:
             db.close()
