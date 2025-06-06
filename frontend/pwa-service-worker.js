@@ -5,7 +5,7 @@ const API_CACHE = 'pulseway-api-v1.0.0';
 
 // Files to cache for offline functionality
 const STATIC_FILES = [
-    '/',
+    '/', // Should map to index.html
     '/index.html',
     '/manifest.json',
     '/icon-192.png',
@@ -13,7 +13,10 @@ const STATIC_FILES = [
     '/devices.html',
     '/scripts.html',
     '/notifications.html',
-    '/settings.html'
+    '/settings.html',
+    '/css/main.css',
+    '/js/utils.js',
+    '/js/app.js'
 ];
 
 // API endpoints to cache
@@ -50,9 +53,10 @@ self.addEventListener('activate', event => {
     
     event.waitUntil(
         caches.keys().then(cacheNames => {
+            const CURRENT_CACHES = [STATIC_CACHE, API_CACHE];
             return Promise.all(
                 cacheNames.map(cacheName => {
-                    if (cacheName !== STATIC_CACHE && cacheName !== API_CACHE) {
+                    if (!CURRENT_CACHES.includes(cacheName)) {
                         console.log('[SW] Deleting old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
