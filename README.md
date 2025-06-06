@@ -113,6 +113,85 @@ The `scripts/` directory contains helper scripts for common operations:
     ```
     *Ensure the scripts are executable: `chmod +x scripts/*.sh`*
 
+## Testing
+
+This project includes several types of tests to ensure code quality and functionality.
+
+### Prerequisites for Running Tests
+
+- **Python Environment**: Ensure Python is installed. It's recommended to use a virtual environment.
+- **Install Dependencies**: From the project root directory, install necessary Python packages:
+  ```bash
+  pip install -r requirements.txt
+  ```
+  This file includes `pytest`, `pytest-asyncio` (for API integration tests), and `locust` (for load tests).
+- **Docker**: For tests involving Docker (like backup/restore script tests), ensure Docker is installed and running.
+- **Working Directory**: Most test commands below assume your current working directory is `backend/`.
+
+### Unit Tests
+
+Unit tests focus on individual components, primarily services. We use Python's `unittest` framework.
+
+- **DeviceService Unit Tests**:
+  These tests for `backend/app/services/device_service.py` are located in `backend/tests/unit/test_device_service.py`. They use extensive mocking for database and Pulseway client interactions.
+  To run them, navigate to the `backend` directory and use:
+  ```bash
+  python -m unittest tests/unit/test_device_service.py
+  ```
+  Or, to discover and run all unit tests in the `tests/unit` directory:
+  ```bash
+  python -m unittest discover -s tests/unit -p "test_*.py"
+  ```
+
+### Integration Tests
+
+Integration tests verify interactions between different parts of the application, such as API endpoints and the database, or external scripts and Docker. These tests typically use `pytest`.
+
+- **Database Operations Tests**:
+  Located in `backend/tests/integration/test_database_operations.py`, these tests verify CRUD operations and relationships for the SQLAlchemy models against an in-memory SQLite database.
+  To run (assuming `pytest` is installed and you are in the `backend` directory):
+  ```bash
+  pytest tests/integration/test_database_operations.py
+  ```
+
+- **API Endpoint Tests**:
+  These tests are in `backend/tests/integration/` with filenames like `test_api_devices.py`, `test_api_monitoring.py`, `test_api_scripts.py`, and `test_api_main.py`. They use FastAPI's `TestClient` to make requests to the API endpoints and verify responses against an in-memory SQLite database.
+  To run all API integration tests (from the `backend` directory):
+  ```bash
+  pytest tests/integration/
+  ```
+  To run a specific file:
+  ```bash
+  pytest tests/integration/test_api_devices.py
+  ```
+
+- **Backup and Restore Script Tests**:
+  The test script `backend/tests/integration/test_backup_restore_scripts.sh` verifies the functionality of `scripts/backup.sh` and `scripts/restore.sh`. This test involves Docker volume manipulation and requires Docker to be running.
+  To run (from the `backend` directory):
+  ```bash
+  bash tests/integration/test_backup_restore_scripts.sh
+  ```
+  *Ensure this test script has execute permissions (`chmod +x tests/integration/test_backup_restore_scripts.sh`)*.
+
+### Load Tests
+
+Basic load testing is set up using Locust. The test definitions are in `backend/load_tests/locustfile.py`.
+
+1.  **Install Locust**:
+    Ensure Locust is installed (it's included in `requirements.txt`):
+    ```bash
+    pip install locust
+    ```
+2.  **Run Locust**:
+    Navigate to the `backend` directory. You need to run the main application first, as Locust acts as a client.
+    Start the backend application (e.g., using Docker as described in "Running the Application").
+    Then, run Locust (from the `backend` directory):
+    ```bash
+    locust -f load_tests/locustfile.py --host=http://localhost:8000
+    ```
+    Open your web browser and go to `http://localhost:8089` (or the URL Locust provides) to start the test and view results.
+    The `locustfile.py` is configured to use an API key for requests. Ensure the API key (`your-secret-key-here` by default in the locustfile, or one set via `PULSEWAY_API_KEY` environment variable if you modify the locustfile) is valid for your running backend instance.
+
 ## Frontend
 
 The frontend application is located in the `/frontend` directory. It consists of static HTML, CSS, and JavaScript files, along with PWA assets (`pwa-manifest.json`, `pwa-service-worker.js`).

@@ -18,4 +18,7 @@ structlog
 sentry-sdk[fastapi]
 pybreaker
 passlib
+pytest # Explicitly add pytest
+pytest-asyncio # For async support in pytest
 pytest-cov # Added for test coverage
+locust
