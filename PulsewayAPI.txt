@@ -1,0 +1,4827 @@
+Title: Pulseway REST API Reference
+
+URL Source: https://api.pulseway.com/?python
+
+Markdown Content:
+Introduction
+Authentication
+Devices
+Device Assets
+Automation Workflows
+Automation Tasks
+Automation Scripts
+Notifications
+Notification Webhooks
+Organizations
+Sites
+Groups
+Custom Fields
+Scopes
+Patch Management
+Endpoint Protection
+Environment
+Errors
+Introduction
+
+This document describes the Pulseway REST API v3 usage.
+
+The REST API accepts JSON as input. The output matches the Accept header and defaults to JSON if the Accept header is not present.
+
+We use built-in HTTP features, like HTTP authentication and HTTP verbs, which can be understood by off-the-shelf HTTP clients.
+
+Authentication
+BASIC Authentication
+requests.post(ENDPOINT + 'publish', publish, auth=(TOKEN_ID, TOKEN_SECRET), headers={"content-type":"application/json"})
+
+
+Make sure to replace TOKEN_ID and TOKEN_SECRET with your own credentials.
+
+Pulseway REST API uses Basic Authentication for all requests. All requests must be via HTTPS otherwise the request will fail.
+
+Basic Authentication requires an Authorization header with the Pulseway Token ID and Token Secret in the TOKEN_ID:TOKEN_SECRET format encoded as Base64.
+
+Devices
+Publish Device
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+contentsItem3 = {
+  "Icon": "information",
+  "Type": "label",
+  "Title": "5 hours, 39 minutes",
+  "Subtitle": "Uptime",
+}
+
+contentsItem2 = {
+  "CallbackUrl": "https://admin.revoproject.com/api.php?key=d41d8cd98&action=reset_config",
+  "Type": "webhook_command",
+  "Title": "Reload Configuration",
+  "Subtitle": "Reads configuration from file",
+}
+
+contentsItem = {
+  "Name": "Status",
+  "Contents": [contentsItem2, contentsItem3],
+}
+
+requestBody = {
+  "InstanceId": "production_website_1",
+  "Name": "Production Web Site",
+  "GroupId": 123,
+  "Description": "Running on ip.91.71.60.196.us-west-2.compute.internal",
+  "Contents": [contentsItem],
+  "NextRefreshIntervalMinutes": 5,
+  "NotifyWhenOffline": "false",
+}
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.devices.post(requestBody)
+  print (result)
+
+except Exception as e:
+  print('PublishDevice raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Identifier": "11111111-2222-3333-4444-555555555555"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Publish registers or updates a Pulseway Device instance.
+
+HTTP Request
+
+https://api.pulseway.com/v3/Devices
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+
+HTTP Verb
+
+POST
+
+Response Data
+Name	Value	Required	Description
+InstanceId	string	yes	Unique instance identifier. (maximum 100 characters)
+Name	string	no	Name of the instance. (maximum 100 characters)
+GroupId	int	yes	Group ID of the instance.
+Description	string	no	Instance description. Shows under the instance name. (maximum 255 characters)
+Contents	array of Group	no	Data used to create the details view.
+NextRefreshIntervalMinutes	int	no	Marks the instance as offline if the Publish method is not called again after the specified interval. Zero disables the offline counter.
+NotifyWhenOffline	string	no	If the next refresh interval was specified, a notification will be sent if the instance goes offline for an extended period of time.
+Group
+Name	Value	Required	Description
+Name	string	yes	Name of the group.
+Contents	array of Label or WebHookCommand	no	An array of items of Label or Web Hook Commands that are part of the group.
+Label
+Name	Value	Required	Description
+Type	string	yes	Type of the object. Must be set to label.
+Title	string	yes	Title of the label. Appears on the first line of the label.
+Subtitle	string	no	Subtitle of the label. Appears on the second line of the label.
+Icon	string	no	Appears to the left of the text. Possible values: information, warning and error.
+WebHookCommand
+Name	Value	Required	Description
+Type	string	yes	Type of the object. Must be set to webhook_command.
+CallbackUrl	string	yes	Url that gets invoked when the command triggers.
+Title	string	yes	Title of the command. Appears on the first line of the button.
+Subtitle	string	no	Subtitle of the command. Appears on the second line of the button.
+Get All Devices
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.devices.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetDevices raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Identifier": "11111111-2222-3333-9B2F-016B8D621AB5",
+      "Name": "Computer1",
+      "GroupId": 123,
+      "GroupName": "Group1",
+      "IsAgentInstalled": false,
+      "IsMdmEnrolled": false,
+      "SiteId": 123,
+      "SiteName": "Site1",
+      "OrganizationId": 123,
+      "OrganizationName": "Organization1",
+      "HasCustomFields": false
+    },
+    {
+      "Identifier": "66666666-7777-8888-9B2F-016B8D621AB5",
+      "Name": "Computer2",
+      "GroupId": 123,
+      "GroupName": "Group1",
+      "IsAgentInstalled": false,
+      "IsMdmEnrolled": false,
+      "SiteId": 123,
+      "SiteName": "Site1",
+      "OrganizationId": 123,
+      "OrganizationName": "Organization1",
+      "HasCustomFields": false
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 2
+  }  
+}
+
+
+Returns a list of devices.
+
+HTTP Request
+
+https://api.pulseway.com/v3/devices
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+scopeId	integer	no	Returns devices only from the specified Scope.	scopeId=123
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100.	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: Identifier, Name, GroupId, GroupName, IsAgentInstalled, IsMdmEnrolled, SiteId, SiteName, OrganizationId, OrganizationName.	$filter=contains(tolower(GroupName), 'mygroup')
+$orderby	string	no	OData sorting. Sortable properties: Identifier, Name, GroupId, GroupName, IsAgentInstalled, IsMdmEnrolled, SiteId, SiteName, OrganizationId, OrganizationName.	$orderby=GroupId desc
+Get a Specific Device
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.devices('11111111-2222-3333-4444-555555555555').get()
+  print (result)
+
+except Exception as e:
+  print('GetDevice raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Description": "Windows 10 Enterprise",
+    "Uptime": "Offline since 63 days ago",
+    "IsOnline": false,
+    "ComputerType": "windows",
+    "InMaintenance": false,
+    "ExternalIpAddress": "1.2.3.4",
+    "CriticalNotifications": 0,
+    "ElevatedNotifications": 0,
+    "NormalNotifications": 0,
+    "LowNotifications": 0,
+    "LocalIpAddresses": [{
+      "Name": "NetworkAdapterName",
+      "PhysicalAddress": "0A0027000010",
+      "DhcpEnabled": false,
+      "Gateways": [],
+      "DnsServers": [
+        "feb0:0:0:ffff::1%1",
+        "feb0:0:0:ffff::2%1",
+        "feb0:0:0:ffff::3%1"
+      ],
+      "SubnetMask": "255.255.255.0",
+      "IpV4": "192.168.1.1",
+      "IpV6": "fe80::b785:162b:b297:74d0%16"
+    }],
+    "ClientVersion": "4.8.5",
+    "Identifier": "11111111-2222-3333-4444-555555555555",
+    "Name": "MyPC",
+    "GroupName": "Home",
+    "GroupId": 123,
+    "IsAgentInstalled": false,
+    "IsMdmEnrolled": false,
+    "SiteId": 123,
+    "SiteName": "Site1",
+    "OrganizationId": 123,
+    "OrganizationName": "Organization1",
+    "HasCustomFields": false
+  },
+  "Meta": {
+    "ResponseCode":200
+  }
+}   
+
+
+Returns the device details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/devices/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the device identifier.
+Get Device Notifications
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.devices('11111111-2222-3333-4444-555555555555').notifications.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetDeviceNotifications raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": 2733,
+      "Message": "The free space on disk drive C: on the computer 'KA-B5796J3' in group 'MyOrg - MyGroup - MySite' is below 9% (29.94 GB free of 476.31 GB).",
+      "DateTime": "2023-07-12T16:15:02Z",
+      "Priority": "elevated"
+    },
+    {
+      "Id": 2732,
+      "Message": "Production Web Site Instance in group Web Sites cannot connect to the database.",
+      "DateTime": "2023-07-12T16:15:42Z",
+      "Priority": "critical"
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 2
+  }
+}   
+
+
+Return the device notifications.
+
+HTTP Request
+
+https://api.pulseway.com/v3/devices/:id/notifications
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the device identifier.
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: Id, Message, DateTime, Priority.	$filter=contains(tolower(Message), 'free space')
+$orderby	string	no	OData sorting. Sortable properties: Id, Message, DateTime, Priority.	$orderby=Priority
+Get Antivirus Status
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.devices('11111111-2222-3333-4444-555555555555').antivirus.get()
+  print (result)
+
+except Exception as e:
+  print('GetAntivirusStatus raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "ProtectionStatus": "active",
+    "DefinitionsStatus": "up_to_date",
+    "ScanStatus": "scanning",
+    "UpdateStatus": "updating",
+    "AgentStatus": [
+      "installed",
+      "scanning",
+      "updating"
+    ],
+    "Policy": "Production Servers"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Returns the antivirus status of a device.
+
+HTTP Request
+
+https://api.pulseway.com/v3/devices/:deviceId/antivirus
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+deviceId	string	yes	The ID of the device.
+Get Device Custom Fields
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.devices('11111111-2222-3333-4444-555555555555').customFields.get()
+  print (result)
+
+except Exception as e:
+  print('GetDeviceCustomFields raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": 123,
+      "Name": "Custom Field Name",
+      "Value": "Custom Field Value1",
+      "Type": "Text"
+    },
+    {
+      "Id": 345,
+      "Name": "Custom Field Name2",
+      "Value": "2",
+      "Type": "Number"
+    }
+  ],
+  "Meta": {
+    "TotalCount": 2,
+    "ResponseCode": 200
+  }
+}   
+
+
+Returns the device custom fields.
+
+HTTP Request
+
+https://api.pulseway.com/v3/devices/:id/customfields
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the device identifier.
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: Id, Name, Value, Type.	$filter=contains(tolower(Name), 'Custom')
+$orderby	string	no	OData sorting. Sortable properties: Id, Name, Value, Type.	$orderby=Type
+Get Device Applied Policies
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.devices('11111111-2222-3333-4444-555555555555').appliedpolicies.get()
+  print (result)
+
+except Exception as e:
+  print('GetDeviceAppliedPolicies raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "PolicyType": "Antivirus",
+      "PolicyId": null,
+      "PolicyName": "No Antivirus"
+    },
+    {
+      "PolicyType": "Ransomware Detection",
+      "PolicyId": null,
+      "PolicyName": "No Policy (Explicitly configured)"
+    },
+    {
+      "PolicyType": "Patch Management",
+      "PolicyId": 292,
+      "PolicyName": "My Patch Management Policy"
+    },
+    {
+      "PolicyType": "Device Configuration",
+      "PolicyId": 214,
+      "PolicyName": "My DC Policy",
+      "Profiles": [
+        {
+          "Id": 1906,
+          "Name": "My DC Profile",
+          "Category": "General",
+          "Settings": {
+            "AllowLogin": false,
+            "AllowLogoff": false,
+            "AllowRestart": true,
+            "AllowShutDown": true,
+            "AllowPowerOff": false,
+            "AllowSuspend": false,
+            "AllowHibernate": false,
+            "AllowLock": false,
+            "ForceLogoff": true,
+            "ForceRestart": true,
+            "ForceShutDown": true,
+            "ForcePowerOff": true,
+            "ForceSuspend": true,
+            "ForceHibernate": true
+          }
+        }
+      ]
+    },
+    {
+      "PolicyType": "Monitoring",
+      "PolicyId": 221,
+      "PolicyName": "My Free Space Policy",
+      "Profiles": [
+        {
+          "Id": 1938,
+          "Name": "Free Space Profile",
+          "Category": "Storage",
+          "Settings": {
+            "SendNotificationOnLowStorageSpaceSystem": false,
+            "LowStorageSpaceSystem": 10.0,
+            "LowStorageSpaceSystemPercentage": true,
+            "PrioritySendNotificationOnLowStorageSpaceSystem": "Normal",
+            "SendNotificationOnLowStorageSpaceOther": true,
+            "LowStorageSpaceOther": 95.0,
+            "LowStorageSpaceOtherPercentage": true,
+            "PrioritySendNotificationOnLowStorageSpaceOther": "Normal",
+            "Disks": [],
+            "DisableLocalStorageNotifications": false
+          }
+        }
+      ]
+    }
+  ],
+  "Meta": {
+    "TotalCount": 5,
+    "ResponseCode": 200
+  }
+}
+
+
+
+
+Returns a list of policies and profiles applied to a device.
+
+HTTP Request
+
+https://api.pulseway.com/v3/devices/:id/appliedpolicies
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the device identifier.
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=PolicyType eq 'Device Configuration'
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=PolicyType
+Applied Policy Response Properties
+Property	Type	Filterable	Sortable	Description
+PolicyType	string	yes	yes	The type of policy. Possible values are Device Configuration, Monitoring, Antivirus, Ransomware Detection, Patch Management.
+PolicyId	integer	yes	yes	The policy’s ID. Can be null for the explicitly configured No Policy rule.
+PolicyName	string	yes	yes	The name of the policy. For the expliclty configured No Policy rule, the name is No Policy (Explicitly configured).
+Profiles	array of Profile	no	no	The list of profiles applied to the device. Only supported by Device Configuration and Monitoring policies.
+
+For Antivirus and Ransomware Detection policies, use the https://api.pulseway.com/v3/endpointprotection/policies/:policyId endpoint to get policy details.
+
+For Patch Management policies, use the https://api.pulseway.com/v3/patchmanagement/policies/:policyId endpoint to get policy settings.
+
+Profile
+Property	Type	Description
+Id	integer	The profile’s ID.
+Name	string	The name of the profile.
+Category	string	The profile’s category. Possible values are General, Remote Desktop, File Browser, etc.
+Settings	object	The profile’s settings. The properties set depends on the ProfileCategory and the operating system of the device.
+Device Assets
+Get Assets
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.assets.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetAssets raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Identifier": "11111111-2222-3333-4444-555555555555",
+      "Name": "Computer1",
+      "GroupName": "Group1",
+      "Description": "Windows 10 Enterprise",
+      "Tags": ["development"],
+      "Type": "windows",
+      "ClientVersion": "5.1.2",
+      "LastUpdated": "",
+      "LastSeenOnline": "2017-08-11T15:10:06Z",
+      "LastReboot": "",
+      "ExternalUrl": "https://<server_name>/app/main/systems/11111111-2222-3333-4444-555555555555/details",
+      "CpuUsage": 19,
+      "MemoryUsage": 55,
+      "MemoryTotal": 8589398016,
+      "FirewallEnabled": false,
+      "AntivirusEnabled": "enabled",
+      "AntivirusUpToDate": "no",
+      "UacEnabled": true,
+      "EventLogs": {
+        "Error": 2159,
+        "Warning": 928,
+        "Information": 55353
+      },
+      "Updates": {
+        "Critical": 12,
+        "Important": 1,
+        "Moderate": 0,
+        "Low": 0,
+        "Unspecified": 0
+      },
+      "AssetInfo": [
+        {
+          "CategoryName": "System",
+          "CategoryData": {
+            "Name": "Computer1",
+            "Manufacturer": "VMware, Inc.",
+            "Model": "VMware Virtual Platform",
+            "Type": "x64-based PC",
+            "CPU": "Intel(R) Core(TM) i7-3720QM CPU @ 2.60GHz",
+            "Number of Processors": "1",
+            "Number of Logical Processors": "2",
+            "DNS Host Name": "Computer1",
+            "Domain": "WORKGROUP",
+            "Owner Name": "John",
+            "Roles": "LM_Workstation, LM_Server, SQLServer, NT, Potential_Browser, Master_Browser",
+            "Status": "OK"
+          }
+        },
+        {
+          "CategoryName": "BIOS",
+          "CategoryData": {
+            "Serial Number": "VMware-55 44 55 22 44 11 44 dd-22 f4 a4 10 bb ee 77 cc",
+            "Name": "PhoenixBIOS 4.0 Release 6.0     ",
+            "Manufacturer": "Phoenix Technologies LTD",
+            "SMBIOS Version": "6.00",
+            "SMBIOS Major Version": "2",
+            "SMBIOS Minor Version": "7",
+            "Version": "INTEL  - 6040000",
+            "Release Date": "Thursday, July 2, 2015 1:00 AM",
+            "Status": "OK",
+            "Description": "PhoenixBIOS 4.0 Release 6.0     "
+          }
+        },
+        {
+          "CategoryName": "Operating System",
+          "CategoryData": {
+            "Name": "Windows 10 Enterprise",
+            "Version": "10.0.15063.0",
+            "Build Type": "Multiprocessor Free",
+            "Registered User": "John",
+            "Serial Number": "11111-22222-233333-44444",
+            "Service Pack Major Version": "0",
+            "Service Pack Minor Version": "0",
+            "System Device": "\\Device\\HarddiskVolume2",
+            "System Directory": "C:\\WINDOWS\\system32",
+            "Windows Directory": "C:\\WINDOWS",
+            "Install Date": "Tuesday, May 16, 2017 5:15 PM",
+            "Local Date and Time": "Friday, August 11, 2017 1:54 PM",
+            "Last Boot Up Time": "Thursday, August 3, 2017 10:26 AM"
+          }
+        }
+      ],
+      "PublicIpAddress": "1.2.3.4",
+      "IpAddresses": [
+        {
+          "Name": "Ethernet0",
+          "MAC": "001122334455",
+          "IPs": [
+            {
+              "IP": "192.168.0.1",
+              "V6": false,
+              "Download": 5097,
+              "Upload": 2067
+            }
+          ]
+        }
+      ],
+      "Disks": [
+        {
+          "Name": "C:",
+          "System": true,
+          "FreePercentage": 73,
+          "TotalValue": 277358588
+        }
+      ],
+      "InstalledSoftware": [
+        {
+          "Name": "Google Chrome",
+          "Publisher": "Google Inc.",
+          "Version": "60.0.3112.90"
+        },
+        {
+          "Name": "Google Update Helper",
+          "Publisher": "Google Inc.",
+          "Version": "1.3.33.5"
+        }
+      ],
+      "LocalIpAddresses": [{
+        "Name": "NetworkAdapterName",
+        "PhysicalAddress": "0A0027000010",
+        "DhcpEnabled": false,
+        "Gateways": [],
+        "DnsServers": [
+          "feb0:0:0:ffff::1%1",
+          "feb0:0:0:ffff::2%1",
+          "feb0:0:0:ffff::3%1"
+        ],
+        "SubnetMask": "255.255.255.0",
+        "IpV4": "192.168.1.1",
+        "IpV6": "fe80::b785:162b:b297:74d0%16"
+      }]
+    }
+  ],
+  "Meta": {
+    "TotalCount": 1,
+    "ResponseCode": 200
+  }
+}
+
+
+Returns a list of assets.
+
+HTTP Request
+
+https://api.pulseway.com/v3/assets
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: Identifier, Name, GroupName, Description, …	$filter=GroupName eq 'My Org - My Site - My Group'
+$orderby	string	no	OData sorting. Sortable properties: Identifier, Name, GroupName, Description, …	$orderby=Name
+Get Assets for a Specific Device
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.assets('11111111-2222-3333-4444-555555555555').get()
+  print (result)
+
+except Exception as e:
+  print('GetDeviceAssets raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Identifier": "11111111-2222-3333-4444-555555555555",
+    "Name": "Computer1",
+    "GroupName": "Group1",
+    "Description": "Windows 10 Enterprise",
+    "Tags": [
+      "development"
+    ],
+    "Type": "windows",
+    "ClientVersion": "5.1.2",
+    "LastUpdated": "",
+    "LastSeenOnline": "2017-08-11T15:10:06Z",
+    "LastReboot": "",
+    "ExternalUrl": "https://<server_name>/app/main/systems/11111111-2222-3333-4444-555555555555/details",
+    "CpuUsage": 19,
+    "MemoryUsage": 55,
+    "MemoryTotal": 8589398016,
+    "FirewallEnabled": false,
+    "AntivirusEnabled": "enabled",
+    "AntivirusUpToDate": "yes",
+    "UacEnabled": true,
+    "EventLogs": {
+      "Error": 2159,
+      "Warning": 928,
+      "Information": 55353
+    },
+    "Updates": {
+      "Critical": 12,
+      "Important": 1,
+      "Moderate": 0,
+      "Low": 0,
+      "Unspecified": 0
+    },
+    "AssetInfo": [
+      {
+        "CategoryName": "System",
+        "CategoryData": {
+          "Name": "Computer1",
+          "Manufacturer": "VMware, Inc.",
+          "Model": "VMware Virtual Platform",
+          "Type": "x64-based PC",
+          "CPU": "Intel(R) Core(TM) i7-3720QM CPU @ 2.60GHz",
+          "Number of Processors": "1",
+          "Number of Logical Processors": "2",
+          "DNS Host Name": "Computer1",
+          "Domain": "WORKGROUP",
+          "Owner Name": "John",
+          "Roles": "LM_Workstation, LM_Server, SQLServer, NT, Potential_Browser, Master_Browser",
+          "Status": "OK"
+        }
+      },
+      {
+        "CategoryName": "BIOS",
+        "CategoryData": {
+          "Serial Number": "VMware-55 44 55 22 44 11 44 dd-22 f4 a4 10 bb ee 77 cc",
+          "Name": "PhoenixBIOS 4.0 Release 6.0     ",
+          "Manufacturer": "Phoenix Technologies LTD",
+          "SMBIOS Version": "6.00",
+          "SMBIOS Major Version": "2",
+          "SMBIOS Minor Version": "7",
+          "Version": "INTEL  - 6040000",
+          "Release Date": "Thursday, July 2, 2015 1:00 AM",
+          "Status": "OK",
+          "Description": "PhoenixBIOS 4.0 Release 6.0     "
+        }
+      },
+      {
+        "CategoryName": "Operating System",
+        "CategoryData": {
+          "Name": "Windows 10 Enterprise",
+          "Version": "10.0.15063.0",
+          "Build Type": "Multiprocessor Free",
+          "Registered User": "John",
+          "Serial Number": "11111-22222-233333-44444",
+          "Service Pack Major Version": "0",
+          "Service Pack Minor Version": "0",
+          "Device": "\\Device\\HarddiskVolume2",
+          "System Directory": "C:\\WINDOWS\\system32",
+          "Windows Directory": "C:\\WINDOWS",
+          "Install Date": "Tuesday, May 16, 2017 5:15 PM",
+          "Local Date and Time": "Friday, August 11, 2017 1:54 PM",
+          "Last Boot Up Time": "Thursday, August 3, 2017 10:26 AM"
+        }
+      }
+    ],
+    "PublicIpAddress": "1.2.3.4",
+    "IpAddresses": [
+      {
+        "Name": "Ethernet0",
+        "MAC": "001122334455",
+        "IPs": [
+          {
+            "IP": "192.168.0.1",
+            "V6": false,
+            "Download": 5097,
+            "Upload": 2067
+          }
+        ]
+      }
+    ],
+    "Disks": [
+      {
+        "Name": "C:",
+        "System": true,
+        "FreePercentage": 73,
+        "TotalValue": 277358588
+      }
+    ],
+    "InstalledSoftware": [
+      {
+        "Name": "Google Chrome",
+        "Publisher": "Google Inc.",
+        "Version": "60.0.3112.90"
+      },
+      {
+        "Name": "Google Update Helper",
+        "Publisher": "Google Inc.",
+        "Version": "1.3.33.5"
+      }
+    ],
+    "LocalIpAddresses": [{
+      "Name": "NetworkAdapterName",
+      "PhysicalAddress": "0A0027000010",
+      "DhcpEnabled": false,
+      "Gateways": [],
+      "DnsServers": [
+        "feb0:0:0:ffff::1%1",
+        "feb0:0:0:ffff::2%1",
+        "feb0:0:0:ffff::3%1"
+      ],
+      "SubnetMask": "255.255.255.0",
+      "IpV4": "192.168.1.1",
+      "IpV6": "fe80::b785:162b:b297:74d0%16"
+    }]
+  },
+  "Meta": {
+      "ResponseCode": 200
+  }
+}
+
+
+Returns the assets for a specific device.
+
+HTTP Request
+
+https://api.pulseway.com/v3/assets/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+URL Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the device identifier.
+Automation Workflows
+Run Workflow
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+constantVariableOverridesItem = {
+  "Name": "myVariable",
+  "Value": "value from API",
+}
+
+requestBody = {
+  "DeviceIdentifiers": ["11111111-2222-3333-4444-555555555555", "11111111-2222-3333-4444-666666666666"],
+  "WebhookUrl": "https://webhook-target-site/path",
+  "ConstantVariableOverrides": [constantVariableOverridesItem],
+}
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.workflows('123').run.post(requestBody)
+  print (result)
+
+except Exception as e:
+  print('RunWorkflow raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "NewExecutions": [
+      {
+        "ExecutionId": 14595,
+        "TargetType": "Device",
+        "TargetId": "11111111-2222-3333-4444-555555555555",
+        "CreatedAt": "2024-01-23T12:55:00.0000000Z",
+        "ConstantVariableOverrides": [
+          {
+            "Name": "myVariable",
+            "Value": "value from API"
+          }
+        ]
+      }
+    ],
+    "ExistingExecutions": [
+      {
+        "ExecutionId": 14594,
+        "TargetType": "Device",
+        "TargetId": "11111111-2222-3333-4444-666666666666",
+        "CreatedAt": "2024-01-23T12:50:00.0000000Z",
+        "ConstantVariableOverrides": [
+          {
+            "Name": "anotherVariable",
+            "Value": "some content"
+          },
+          {
+            "Name": "myVariable",
+            "Value": "oldExecutionValue"
+          }
+        ]
+      }
+    ]
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Runs a specific automation workflow.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/workflows/:id/run
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+POST
+
+Route Parameters
+Parameter	Value	Required	Description
+id	integer	Yes	Id of the workflow to run.
+Request Body Parameters
+Name	Value	Required	Description
+DeviceIdentifiers	array of strings	No	Identifiers for the devices where the automation workflow will be executed. If not specified, the workflow will be executed on the configured scope.
+WebhookUrl	string	No	Webhook target URL. It should start with “http://” or “https://” protocol. (maximum 2000 characters)
+ConstantVariableOverrides	array of VariableOverride	No	A list of variables to override in the Workflow. Only variables registered as a separate “Get Device Value” step with a Constant value can be overridden.
+VariableOverride
+Name	Value	Required	Description
+Name	string	Yes	The name of the workflow variable, which is registered in the “Get Device Value > Constant Value” step of the Workflow.
+Value	string	Yes	The value of the workflow variable, which will override the value specified in the Workflow Step.
+Response Data
+Property	Type	Description
+NewExecutions	array of WorkflowExecution	The list of workflow executions that were created right after the run API call.
+ExistingExecutions	array of WorkflowExecution	The list of workflow executions that have been already targeted to the specified devices. New execution of the same Workflow can not be created until existing executions are finished.
+WorkflowExecution
+Property	Type	Description
+ExecutionId	integer	ID of the Workflow Execution.
+TargetType	string	Either Device or Server.
+TargetId	string	The device identifier, applicable when TargetType is Device.
+CreatedAt	string (datetime)	The date and time when the execution was created.
+ConstantVariableOverrides	array of VariableOverride	A list of constant variable overrides applied to the workflow execution.
+VariableOverride
+Name	Value	Description
+Name	string	The name of the overridden workflow variable.
+Value	string	The value of the overridden workflow variable.
+Web Hook message
+
+After the completion of a workflow execution on a device, a POST request is sent to the specified webhook URL. For example, if three devices were targeted for workflow execution, three POST requests would be sent to the webhook. This request includes the following properties in the JSON body:
+
+Name	Value	Description
+EventType	string	WorkflowExecutionFinished
+WorkflowId	number	ID of the workflow.
+ExecutionId	number	ID of the workflow execution.
+Status	string	Success or Failed.
+TargetType	string	Either Device or Server.
+TargetId	string	The device identifier, applicable when TargetType is Device.
+Get Workflow Executions
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.automation.workflows.executions.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetWorkflowExecutions raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": 14603,
+      "WorkflowId": 2479,
+      "TargetType": "Device",
+      "TargetId": "4bfa89ab-1491-46b6-8531-35a868a49638",
+      "TriggerType": "Ad-hoc and Scheduled",
+      "TriggerId": "2479",
+      "Status": "Running",
+      "CreatedAt": "2024-02-01T09:44:37.1381756Z",
+      "CompletedAt": null
+    },
+    {
+      "Id": 14598,
+      "WorkflowId": 2482,
+      "TargetType": "Server",
+      "TargetId": null,
+      "TriggerType": "Ad-hoc and Scheduled",
+      "TriggerId": "2482",
+      "Status": "Success",
+      "CreatedAt": "2024-01-29T13:42:35Z",
+      "CompletedAt": "2024-01-29T13:42:38Z"
+    },
+    {
+      "Id": 14595,
+      "WorkflowId": 2479,
+      "TargetType": "Device",
+      "TargetId": "4bfa89ab-1491-46b6-8531-35a868a49638",
+      "TriggerType": "Ad-hoc and Scheduled",
+      "TriggerId": "2479",
+      "Status": "Success",
+      "CreatedAt": "2024-01-23T12:58:18Z",
+      "CompletedAt": "2024-01-23T12:58:39Z",
+      "ConstantVariableOverrides": [
+        {
+          "Name": "fileContent",
+          "Value": "value passed from API"
+        },
+        {
+          "Name": "filePath",
+          "Value": "D:\\filename.log"
+        }
+      ]
+    }
+  ],
+  "Meta": {
+    "TotalCount": 3,
+    "ResponseCode": 200
+  }
+}
+
+
+Returns running workflow executions and the latest completed workflow executions.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/workflows/executions
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=20
+$skip	integer	no	Starting position.	$skip=20
+$filter	string	no	OData filters. See below for filterable properties.	$filter=ConstantVariableOverrides/any(v: v/Name eq 'filePath')
+$orderby	string	no	OData sorting. See below for sortable properties.	$orderby=CreatedAt desc
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	The ID of the workflow execution.
+WorkflowId	integer	yes	yes	The ID of the workflow.
+TargetType	string	yes	yes	Specifies the target type, either Device or Server.
+TargetId	string	yes	yes	The device identifier, applicable when TargetType is Device.
+TriggerType	string	yes	yes	The mechanism that triggered the workflow. Possible values: Notification, Ad-hoc and Scheduled, External Webhook.
+TriggerId	string	yes	yes	For Ad-hoc and Scheduled, this is the Workflow ID. For Notification, it indicates the Notification ID that triggered the workflow execution.
+Status	string	yes	yes	The current status of the execution. Possible values: Pending, Running, Success, Failed.
+CreatedAt	string (datetime)	yes	yes	The date and time the execution was created.
+CompletedAt	string (datetime)	yes	yes	The date and time the execution was completed.
+ConstantVariableOverrides	array of VariableOverride	yes	no	Lists the constant variable overrides applied to the workflow execution. Visible only if any variable override has been applied.
+VariableOverride
+Property	Type	Filterable	Sortable	Description
+Name	string	yes	no	The name of the overridden workflow variable.
+Value	string	yes	no	The value of the overridden workflow variable.
+Get Workflow Execution Details
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.workflows.executions('1234').get()
+  print (result)
+
+except Exception as e:
+  print('GetWorkflowExecutions raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 1234,
+    "WorkflowId": 12,
+    "TargetType": "Device",
+    "TargetId": "11111111-2222-3333-4444-555555555555",
+    "TriggerType": "Ad-hoc and Scheduled",
+    "TriggerId": "12",
+    "Status": "Success",
+    "CreatedAt": "2024-02-01T12:41:00Z",
+    "CompletedAt": "2024-02-01T12:41:03Z",
+    "ExecutionSteps": [
+      {
+        "WorkflowStepId": 1705402618868,
+        "Status": "Success",
+        "CompletedAt": "2024-02-01T12:41:00.3863134Z",
+        "UpdatedAt": null,
+        "Outcome": true,
+        "OutputItems": null
+      },
+      {
+        "WorkflowStepId": 1706791071874,
+        "Status": "Success",
+        "CompletedAt": "2024-02-01T12:41:00.9199395Z",
+        "UpdatedAt": null,
+        "Outcome": false,
+        "OutputItems": null
+      },
+      {
+        "WorkflowStepId": 1706791169216,
+        "Status": "Success",
+        "CompletedAt": "2024-02-01T12:41:03.4941126Z",
+        "UpdatedAt": null,
+        "Outcome": true,
+        "OutputItems": [
+          {
+            "EmailSubject": "Workflow Execution Finished",
+            "EmailBody": "The workflow execution was finished."
+          }
+        ]
+      }
+    ]
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+
+Returns the details of a workflow execution.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/workflows/executions/:executionId
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+executionId	integer	yes	The ID of the workflow execution.
+Response Data
+Property	Type	Description
+Id	integer	The ID of the workflow execution.
+WorkflowId	integer	The ID of the workflow.
+TargetType	string	Specifies the target type, either Device or Server.
+TargetId	string	The device identifier, applicable when TargetType is Device.
+TriggerType	string	The mechanism that triggered the workflow. Possible values: Notification, Ad-hoc and Scheduled, External Webhook.
+TriggerId	string	For Ad-hoc and Scheduled, this is the Workflow ID. For Notification, it indicates the Notification ID that triggered the workflow execution.
+Status	string	The current status of the execution. Possible values: Pending, Running, Success, Failed.
+CreatedAt	string (datetime)	The date and time the execution was created.
+CompletedAt	string (datetime)	The date and time the execution was completed.
+ConstantVariableOverrides	array of VariableOverride	Lists the constant variable overrides applied to the workflow execution. Visible only if any variable override has been applied.
+ExecutionSteps	array of ExecutionStep	Details of the execution steps.
+VariableOverride
+Property	Type	Description
+Name	string	The name of the overridden workflow variable.
+Value	string	The value of the overridden workflow variable.
+ExecutionStep
+Property	Type	Description
+WorkflowStepId	integer	The ID of the workflow step.
+Status	string	The status of the step execution. Possible values: Pending, Running, Success, Failed.
+CompletedAt	string (datetime)	The date and time the step execution was completed.
+UpdatedAt	string (datetime)	The date and time the step was last updated, if applicable.
+Outcome	boolean	For conditions, this is true if the condition is met and false if not. For Script Actions, this is false if the script execution fails. It is null if the step is not completed.
+OutputItems	array of OutputItem	Lists the output items of the step, if applicable.
+OutputItem
+Property	Type	Description
+VariableId	integer	Relevant for Script output.
+VariableName	string	Relevant for Script output.
+VariableDataType	string	Relevant for Script output.
+VariableValue	string	Relevant for Script output.
+EmailSubject	string	Relevant for Email output.
+EmailBody	string	Relevant for Email output.
+PsaTicketTitle	string	Relevant for Create/Update PSA ticket output.
+PsaTicketNote	string	Relevant for Create/Update PSA ticket output.
+PsaTicketDescription	string	Relevant for Create/Update PSA ticket output.
+IsPsaTicketNoteInternal	boolean	Relevant for Create/Update PSA ticket output.
+PsaIntegrationId	integer	Relevant for Create/Update PSA ticket output.
+PsaTicketParameters	array of KeyValuePair	Relevant for Create/Update PSA ticket output.
+KeyValuePair
+Property	Type
+Key	string
+Value	string
+Get All Workflows
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.automation.workflows.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetWorkflows raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+
+{
+  "Data": [
+    {
+      "Id": 123,
+      "Name": "Workflow Example",
+      "Description": "This is an example",
+      "IsEnabled": true,
+      "TriggerType": "Ad-hoc and Scheduled",
+      "TriggerSubType": "Scheduled",
+      "UpdatedAt": "2024-01-29T14:35:22Z",
+      "ContextType": "Organization",
+      "ContextItemId": "111"
+    },
+    {
+      "Id": 124,
+      "Name": "Deviceless Workflow",
+      "Description": null,
+      "IsEnabled": false,
+      "TriggerType": "Ad-hoc and Scheduled",
+      "TriggerSubType": "Manual",
+      "UpdatedAt": "2024-01-29T13:39:14Z",
+      "ContextType": "Deviceless",
+      "ContextItemId": null
+    }
+  ],
+  "Meta": {
+    "TotalCount": 2,
+    "ResponseCode": 200
+  }
+}
+
+
+
+
+Returns a list of workflows.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/workflows
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=TriggerSubType eq 'Manual'
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=UpdatedAt desc
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	The ID of the workflow.
+Name	string	yes	yes	Workflow name.
+Description	string	yes	yes	Workflow description.
+IsEnabled	boolean	yes	yes	Indicates whether the workflow is currently active (true) or inactive (false).
+TriggerType	string	yes	yes	Identifies the workflow’s triggering mechanism. Possible values: Notification, Ad-hoc and Scheduled, External Webhook.
+TriggerSubType	string	yes	yes	Further categorizes the trigger type. For Notification, specifies the notification type (e.g., HIGH_CPU_USAGE). For Ad-hoc and Scheduled indicates whether the trigger is Manual or Scheduled.
+UpdatedAt	string (datetime)	yes	yes	Timestamp of the workflow’s last modification.
+ContextType	string	yes	yes	Specifies the context in which the workflow operates. Possible values: Scope, Organization, Device, Deviceless.
+ContextItemId	string	yes	yes	Identifier of the item related to the workflow’s context.
+Get a Specific Workflow
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.workflows('123').get()
+  print (result)
+
+except Exception as e:
+  print('GetWorkflow raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 123,
+    "Name": "Workflow Example",
+    "Description": "This is an example",
+    "IsEnabled": true,
+    "UpdateAt": "2024-01-29T14:35:22.913543Z",
+    "ContextType": "Organization",
+    "ContextItemId": "111",
+    "Trigger": {
+      "TriggerType": "Ad-hoc and Scheduled",
+      "TriggerSubType": "Scheduled",
+      "Description": "Triggered automatically on scheduled time",
+      "SkipOffline": false,
+      "Schedule": {
+        "StartDate": "2024-02-16T23:00:00Z",
+        "Timezone": "US/Eastern",
+        "Frequency": 2,
+        "FrequencyInterval": "Weekly",
+        "FrequencySubInterval": "Monday, Thursday, Sunday"
+      },
+      "Id": 1706538731365,
+      "DisplayName": "Scheduled"
+    },
+    "Actions": [
+      {
+        "Id": 1706003840471,
+        "DisplayName": "Run Script",
+        "StepType": "Action",
+        "ActionType": "RunScript",
+        "Parameters": "{\"Id\":\"764f0e21-f2fa-4187-bafd-487618cb5ed5\",\"Name\":\"Test Script\",\"Variables\":[{\"Id\":239,\"DataType\":0,\"Value\":\"1\",\"Name\":\"Vartest\"}]}"
+      },
+      {
+        "Id": 1706538812343,
+        "DisplayName": "Get Device Value",
+        "StepType": "Action",
+        "ActionType": "GetVariable",
+        "Parameters": "{\"ConstantValue\":\"NO_INPUT\",\"ConstantValueType\":2,\"VariableName\":\"input1\",\"VariableType\":12}"
+      },
+      {
+        "Id": 1706538844640,
+        "DisplayName": "Condition",
+        "StepType": "Condition",
+        "PositiveOutcome": [
+          {
+            "Id": 1706538889666,
+            "DisplayName": "Execute Powershell",
+            "StepType": "Action",
+            "ActionType": "ExecutePowershell",
+            "Parameters": "{\"CommandLine\":\"#1706538812461\",\"ExecuteAsSystem\":false,\"CaptureOutput\":true,\"OutputVariable\":\"ExecutePowershellCommandResult\",\"Variables\":[{\"VariableId\":\"1706538812461\",\"PropertyId\":\"variable\",\"WorkflowStepId\":0,\"SourceId\":\"input1\",\"DisplayName\":\"input1\",\"Type\":2,\"WorkflowStepName\":\"Variable\"}]}"
+          }
+        ],
+        "NegativeOutcome": [
+          {
+            "Id": 1706538918407,
+            "DisplayName": "End Workflow",
+            "StepType": "Action",
+            "ActionType": "TerminateWorkflow",
+            "Parameters": "{\"Status\":3}"
+          }
+        ],
+        "RuleAggregation": "AllAreTrue",
+        "Rules": [
+          {
+            "Operator": "IsNotEqualTo",
+            "Value": "\"NO_INPUT\"",
+            "PropertyId": "Variable",
+            "VariablesId": "input1",
+            "VariablesType": 0
+          }
+        ]
+      }
+    ]
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+
+Returns the workflow details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/workflows/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	integer	yes	Workflow ID.
+Response Data
+Property	Type	Description
+Id	integer	Workflow ID.
+Name	string	Workflow Name.
+Description	string	Workflow Description.
+IsEnabled	boolean	Indicates whether the workflow is currently active (true) or inactive (false).
+UpdatedAt	string (datetime)	Timestamp of the workflow’s last modification.
+ContextType	string	Specifies the context in which the workflow operates. Possible values: Scope, Organization, Device, Deviceless.
+ContextItemId	string	Identifier of the item related to the workflow’s context.
+Trigger	WorkflowTrigger	Parameters defining the conditions that initiate the workflow.
+Actions	array of WorkflowStep	Sequence of steps that the workflow executes.
+WorkflowTrigger
+Property	Type	Description
+TriggerType	string	Identifies the workflow’s triggering mechanism. Possible values: Notification, Ad-hoc and Scheduled, External Webhook.
+TriggerSubType	string	Further categorizes the trigger type. For Notification, specifies the notification type (e.g., HIGH_CPU_USAGE). For Ad-hoc and Scheduled indicates whether the trigger is Manual or Scheduled.
+Description	string	Description of the workflow trigger.
+SkipOffline	boolean	(For scheduled triggers only) Determines if the trigger should be skipped when a device is offline.
+Schedule	WorkflowTriggerSchedule	(For scheduled triggers only) Scheduling parameters for the workflow.
+Id	integer	ID of the workflow step.
+WorkflowTriggerSchedule
+Property	Type	Description
+StartDate	string	Date and time when the schedule-based trigger becomes active.
+Timezone	string	Timezone used for interpreting the schedule.
+Frequency	integer	Specifies the frequency of the trigger. For example, a value of X in a Weekly interval means “every X weeks.”
+FrequencyInterval	string	Defines the type of frequency interval. Possible values: Daily, Weekly, Monthly, Monthly(day of the week).
+FrequencySubInterval	string	Additional details for the frequency interval. For a Weekly interval it includes specific day of the week: Monday, Thursday, Sunday
+WorkflowStep
+Property	Type	Description
+Id	integer	ID of the workflow step.
+DisplayName	string	User-friendly name of the workflow step.
+StepType	string	Specifies the nature of the step. Possible values: Action, Condition
+ActionType	string	(For action steps only) Describes the type of action. Examples include GetURL, WriteFile.
+Parameters	string(JSON)	(For action steps only) JSON-encoded parameters for the action.
+PositiveOutcome	array of WorkflowStep	(For condition steps only) Steps to execute if the condition rules are met.
+NegativeOutcome	array of WorkflowStep	(For condition steps only) Steps to execute if the condition rules are not met.
+RuleAggregation	string	(For condition steps only) Defines how the rules are evaluated to determine the outcome. Possible values: AllAreTrue, AnyAreTrue.
+Rules	array of WorkflowConditionRule	(For condition steps only) Set of rules that determine the workflow’s execution path.
+WorkflowConditionRule
+Property	Type	Description
+PropertyId	string	Identifies the type of rule. Exampleы: SystemTags, OSType, Organization, ActionType.
+Operator	string	Specifies the operator used for evaluating the rule. Examples: Contains, DoesNoteContain, IsEqualTo.
+Value	string(JSON)	JSON-encoded value used for rule evaluation.
+…	…	Additional properties may be included, varying based on the specified PropertyId.
+Automation Tasks
+Run Task
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+requestBody = {
+  "DeviceIdentifiers": ["11111111-2222-3333-4444-555555555555"],
+  "WebhookUrl": "https://webhook-target-site/path",
+}
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.tasks('1234').run.post(requestBody)
+  print (result)
+
+except Exception as e:
+  print('RunTask raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+    "Meta": {
+        "ResponseCode": 200
+    },
+    "Data": {
+        "Id": 10450
+    }
+}   
+
+
+Runs a specific automation task.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/tasks/:id/run
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+POST
+
+Route Parameters
+Parameter	Value	Required	Description
+id	integer	yes	Id of the task to run.
+Request Body
+Name	Value	Required	Description
+DeviceIdentifiers	array of strings	No	Identifiers of the devices where the automation task will be executed. If the identifiers are not specified the task will be executed on the configured scope.
+WebhookUrl	string	No	Webhook Target URL. It should start with “http://” or “https://” protocol. (maximum 2000 characters)
+Response Data
+Property	Type	Description
+Id	integer	Task Execution ID.
+Webhook Message
+
+After the completion of a task execution on a device, a POST request is sent to the specified webhook URL. For example, if three devices were targeted for task execution, three POST requests would be sent to the webhook. This request includes the following properties in the JSON body:
+
+Name	Value	Description
+EventType	string	TaskExecutionFinished
+TaskId	integer	ID of the Task.
+DeviceIdentifier	string	ID of the Device where the Task was executed.
+ExecutionId	integer	ID of the Task Execution.
+State	string	Successful, Failed or Stopped.
+Get Task Execution
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.tasks.executions('1234').get()
+  print (result)
+
+except Exception as e:
+  print('GetTaskExecution raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Meta": {
+    "ResponseCode": 200
+  },
+  "Data": {
+    "Id": 1234,
+    "TaskId": 12345,
+    "DeviceCount": 2,
+    "SuccessfulDeviceCount": 2,
+    "FailedDeviceCount": 0,
+    "StartTime": "2017-08-31T15:28:25Z",
+    "EndTime": "2017-08-31T15:28:41Z",
+    "Duration": "16 seconds",
+    "State": "Successful"
+  }
+}   
+
+
+Returns the status of a task execution.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/tasks/executions/:executionId
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+executionId	string	yes	The ID of the task execution.
+Response Data
+Property	Type	Description
+Id	integer	The ID of the task execution.
+TaskId	integer	The ID of the task.
+DeviceCount	integer	The total number of devices targeted by the task execution.
+SuccessfulDeviceCount	integer	The number of devices on which the task execution was successful.
+FailedDeviceCount	integer	The number of devices on which the task execution failed.
+StartTime	string (datetime)	The date and time when the execution started.
+EndTime	string (datetime)	The date and time when the execution finished, if applicable.
+Duration	string	A user-friendly description of the task duration.
+State	string	The current state of the execution. Possible values include Running, Failed, Successful, and Stopped.
+Get Task Execution Devices
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.automation.tasks.executions('1234').devices.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetTaskExecutionDevices raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Identifier": "11111111-2222-3333-4444-555555555555",
+      "Name": "Device 1",
+      "GroupName": "MyOrg - My Site - My Group",
+      "Description": "Windows Server 2012 R2 Standard",
+      "ExecutionState": "Successful"
+    },
+    {
+      "Identifier": "66666666-7777-8888-9999-123456789012",
+      "Name": "Device 2",
+      "GroupName": "My Org - My Site - My Group",
+      "Description": "Windows 10 Enterprise",
+      "ExecutionState": "Successful"
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 2
+  }
+}
+
+
+Returns the execution status for devices on which the task has been executed.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/tasks/executions/:executionId/devices
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description	Example
+executionId	string	yes	The ID of the task execution.	1234
+Query Parameters
+Parameter	Value	Required	Description	Example
+includeFailed	string	no	Include devices where the task execution has failed. Defaults to true.	false
+includeSuccessful	string	no	Include devices where the task execution was successful. Defaults to true.	false
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100.	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=ExecutionState eq 'Successful' and contains(Description, 'Windows')
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=ExecutionState
+Response Data
+Property	Type	Filterable	Sortable	Description
+Identifier	string (uid)	yes	yes	The ID of the device.
+Name	string	yes	yes	The name of the device.
+GroupName	string	yes	yes	The name of the group to which the device belongs, in the format: OrganizationName - SiteName - GroupName.
+Description	string	yes	yes	The description of the device.
+ExecutionStatus	string	yes	yes	The current state of the execution. Possible values include Pending, Running, Failed, Successful, Unresponsive, and Stopped.
+Get Task Execution Scripts
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.tasks.executions('123').devices('11111111-1111-1111-1111-111111111111').scripts.get()
+  print (result)
+
+except Exception as e:
+  print('GetTaskExecutionScripts raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": "11111111-1111-1111-1111-111111111111",
+      "Name": "Script 1",
+      "Description": "My Script 1",
+      "IsSuccessful": true
+    },
+    {
+      "Id": "22222222-2222-2222-2222-222222222222",
+      "Name": "Script 2",
+      "Description": null,
+      "IsSuccessful": true
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Returns a list of scripts that were executed as part of a task on a specific device.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/tasks/executions/:executionId/devices/:deviceId/scripts
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+executionId	integer	yes	The ID of the task execution.
+deviceId	string	yes	The ID of the device.
+Response Data
+Property	Type	Description
+Id	string	The ID of the script.
+Name	string	The name of the script.
+Description	string	The description of the script.
+IsSuccessful	boolean	Indicates whether the script execution was successful.
+Get Task Execution Script Output
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.tasks.executions('123').devices('11111111-1111-1111-1111-111111111111').scripts('22222222-2222-2222-2222-222222222222').get()
+  print (result)
+
+except Exception as e:
+  print('GetTaskExecutionScriptOutput raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "ScriptId": "22222222-2222-2222-2222-222222222222",
+    "ScriptName": "Script 2",
+    "ExitCode": 0,
+    "Output": "Script Output Lines"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Returns the output from a script executed as part of a task on a specific device.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/tasks/executions/:executionId/devices/:deviceId/scripts/:scriptId
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+executionId	integer	yes	The ID of the task execution.
+deviceId	string	yes	The ID of the device.
+scriptId	string	yes	The ID of the script.
+Response Data
+Property	Type	Description
+ScriptId	string	The ID of the script.
+ScriptName	string	The name of the script.
+ExitCode	integer	The exit code from the script execution.
+Output	string	The output generated by the script.
+Get All Tasks
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.automation.tasks.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetTasks raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": 123,
+      "Name": "Task Example",
+      "Description": null,
+      "IsEnabled": true,
+      "ScopeId": 329,
+      "ScopeName": "My Scope",
+      "UpdatedAt": "2023-12-08T15:23:09",
+      "IsScheduled": true,
+      "TotalScripts": 2,
+      "IsBuiltIn": false,
+      "ContinueOnError": true,
+      "ExecutionState": "Idle"
+    },
+    {
+      "Id": 124,
+      "Name": "Task Example 2",
+      "Description": "My Task",
+      "IsEnabled": true,
+      "ScopeId": null,
+      "ScopeName": "All Systems",
+      "UpdatedAt": "2023-05-30T12:41:28",
+      "IsScheduled": false,
+      "TotalScripts": 1,
+      "IsBuiltIn": false,
+      "ContinueOnError": false,
+      "ExecutionState": "Running"
+    }
+  ],
+  "Meta": {
+    "TotalCount": 2,
+    "ResponseCode": 200
+  }
+}
+
+
+
+Returns a list of automation tasks.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/tasks
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=contains(Description, 'My Task')
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name asc
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	Task ID.
+Name	string	yes	yes	Task Name.
+Description	string	yes	yes	Task Description.
+IsEnabled	boolean	yes	yes	Indicates whether the task is currently active (true) or inactive (false).
+ScopeId	integer	yes	yes	Identifier of the scope within which the task operates.
+ScopeName	string	yes	yes	Name of the scope within which the task operates.
+UpdatedAt	string (datetime)	yes	yes	Timestamp of the task’s last modification.
+IsScheduled	boolean	yes	yes	Indicates whether the task schedule is configured.
+TotalScripts	integer	yes	yes	Number of scripts to be executed as part of the task.
+IsBuiltIn	boolean	yes	yes	Indicates if the task is a pre-defined, built-in task (true) or user-created (false).
+ContinueOnError	boolean	yes	yes	Specifies if the task should continue execution despite encountering an error.
+ExecutionState	string	yes	yes	Current state of the task’s execution. Possible values: Idle, Running.
+Get a Specific Task
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.tasks('123').get()
+  print (result)
+
+except Exception as e:
+  print('GetTask raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 123,
+    "Name": "Task Example",
+    "Description": null,
+    "IsEnabled": true,
+    "ScopeId": 329,
+    "ScopeName": "My Scope",
+    "UpdatedAt": "2024-01-29T17:08:23",
+    "IsBuiltIn": false,
+    "ContinueOnError": true,
+    "ExecutionState": "Idle",
+    "Scripts": [
+      {
+        "Id": "0e35d93d-d4a7-4d37-88e9-978ccd4cb90c",
+        "Name": "Script A"
+      },
+      {
+        "Id": "764f0e21-f2fa-4187-bafd-487618cb5ed5",
+        "Name": "Script B"
+      }
+    ],
+    "Schedule": {
+      "StartDate": "2024-02-16T23:30:00",
+      "Timezone": "US/Eastern",
+      "Frequency": 2,
+      "FrequencyInterval": "Weekly",
+      "FrequencySubInterval": "Monday, Wednesday, Friday",
+      "RunAsTeamId": 34,
+      "RunAsTeam": "My Team"
+    },
+    "NotifyOnSuccess": {
+      "Enabled": true,
+      "Priority": "Normal"
+    },
+    "NotifyOnFailure": {
+      "Enabled": true,
+      "Priority": "Elevated"
+    }
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Returns the task details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/tasks/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	integer	yes	Task ID.
+Response Data
+Property	Type	Description
+Id	integer	Task ID.
+Name	string	Task Name.
+Description	string	Task Description.
+IsEnabled	boolean	Indicates whether the task is currently active (true) or inactive (false).
+ScopeId	integer	Identifier of the scope within which the task operates.
+ScopeName	string	Name of the scope within which the task operates.
+UpdatedAt	string (datetime)	Timestamp of the task’s last modification.
+IsBuiltIn	boolean	Indicates if the task is a pre-defined, built-in task (true) or user-created (false).
+ContinueOnError	boolean	Specifies if the task should continue execution despite encountering an error.
+ExecutionState	string	Current state of the task’s execution. Possible values: Idle, Running.
+Scripts	array of Script	Collection of scripts to be executed as part of the task.
+Schedule	TaskSchedule	Configuration details for the task’s schedule (only applicable if scheduling is enabled).
+NotifyOnSuccess	TaskNotificationParameters	Notification settings for when the task successfully completes.
+NotifyOnFailure	TaskNotificationParameters	Notification settings for when the task fails to complete successfully.
+Script
+Property	Type	Description
+Id	string (uid)	ID of the script.
+Name	string	Name of the script.
+TaskNotificationParameters
+Property	Type	Description
+Enabled	boolean	Determines if notification should be sent under specific conditions.
+Priority	string	Sets the urgency level of the notification. Possible values: Critical, Elevated, Normal, Low.
+TaskSchedule
+Property	Type	Description
+StartDate	string (datetime)	Date and time when the scheduled task will start.
+Timezone	string	Timezone used for the scheduling.
+Frequency	integer	Specifies how often the task is triggered. For example, a value of X in a Weekly interval means “every X weeks.”
+FrequencyInterval	string	Defines the type of frequency interval. Possible values: Daily, Weekly, Monthly, Monthly(day of the week).
+FrequencySubInterval	string	Additional details for the frequency interval. For a Weekly interval it includes specific day of the week: Monday, Thursday, Sunday.
+RunAsTeamId	integer	ID of the team to be used for Task Run.
+RunAsTeam	string	Name of the team to be used for Task Run.
+Automation Scripts
+Run Script
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+variablesItem = {
+  "Id": 1,
+  "Value": "test",
+}
+
+requestBody = {
+  "DeviceIdentifier": "11111111-2222-3333-4444-555555555555",
+  "WebhookUrl": "https://webhook-target-site/path",
+  "Variables": [variablesItem],
+}
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.scripts('11111111-1111-1111-1111-111111111111').run.post(requestBody)
+  print (result)
+
+except Exception as e:
+  print('RunScript raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+    "Meta": {
+        "ResponseCode": 200
+    },
+    "Data": {
+        "ExecutionId": "64adc13b-bc8f-4ab3-a292-4154d0f1ab12"
+    }
+}   
+
+
+Runs a specific automation script.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/scripts/:id/run
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+POST
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string (uid)	yes	Id of the script to run.
+Request Body
+Name	Value	Required	Description
+DeviceIdentifier	string	Yes	Identifiers of the devices where the automation script will run. The device must be online.
+WebhookUrl	string	No	Webhook Target URL. It should start with “http://” or “https://” protocol. (maximum 2000 characters)
+Variables	array of ScriptVariable (see below)	No	List of overrides for Script Input Variables.
+ScriptVariable Parameters
+Name	Value	Required	Description
+Id	integer	Yes	Id of the variable. The variable must be presented in the InputVariables list of the Script.
+Value	string	Yes	Value of the variable to override.
+Response Data
+Property	Type	Description
+ExecutionId	string (uid)	Script Execution ID.
+Web Hook message
+
+After the completion of a script execution on the device, a POST request is sent to the specified webhook URL. This request includes the following properties in the JSON body:
+
+Name	Value	Description
+EventType	string	ScriptExecutionFinished
+ScriptId	string (uid)	ID of the Script.
+DeviceIdentifier	string (uid)	ID of the Device where the Script was executed.
+ExecutionId	string (uid)	ID of the Script Execution.
+State	string	Successful, Failed or Stopped.
+Get Script Executions
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.automation.scripts('11111111-1111-1111-1111-111111111111').device('11111111-2222-3333-4444-555555555555').executions.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetScriptExecutions raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": "11111111-1111-1111-1111-111111111111",
+      "StartTime": "2024-02-01T13:22:39.249457Z",
+      "DurationInSeconds": null,
+      "State": "Running"
+    },
+    {
+      "Id": "21111111-1111-1111-1111-111111111112",
+      "StartTime": "2024-01-31T16:43:27.2602073Z",
+      "DurationInSeconds": 131.508,
+      "State": "Successful"
+    },
+    {
+      "Id": "31111111-1111-1111-1111-111111111113",
+      "StartTime": "2024-01-31T16:38:19.1085428Z",
+      "DurationInSeconds": 139.441,
+      "State": "Successful"
+    }
+  ],
+  "Meta": {
+    "TotalCount": 3,
+    "ResponseCode": 200
+  }
+}
+
+
+Returns script executions for the specified device. Note that executions may not be available if the device is offline.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/scripts/:scriptId/device/:deviceId/executions
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+scriptId	string (uid)	yes	The ID of the script.
+deviceId	string (uid)	yes	The identifier of the device.
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=20
+$skip	integer	no	Starting position.	$skip=20
+$filter	string	no	OData filters. See below for filterable properties.	$filter=State eq 'Successful'
+$orderby	string	no	OData sorting. See below for sortable properties.	$orderby=StartTime desc
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	string (uid)	yes	yes	The ID of the script execution.
+StartTime	string (datetime)	yes	yes	The date and time when the execution started.
+DurationInSeconds	float	yes	yes	The duration of the script execution in seconds, applicable when the execution is completed.
+State	string	yes	yes	The current state of the execution. Possible values include Running, Failed, Successful, and Stopped.
+Get Script Execution Details
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.scripts('123').device('11111111-2222-3333-4444-555555555555').executions('11111111-1111-1111-1111-111111111111').get()
+  print (result)
+
+except Exception as e:
+  print('GetScriptExecution raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": "22222222-2222-2222-2222-222222222222",
+    "StartTime": "2024-02-01T13:22:39.249457Z",
+    "DurationInSeconds": 125.807,
+    "State": "Successful",
+    "EndTime": "2024-02-01T13:24:45.0564551Z",
+    "Output": "Script\nOutput\n",
+    "ExitCode": 0,
+    "VariableOutputs": [
+      {
+        "Id": 251,
+        "Name": "MyVariable1",
+        "Value": "15",
+        "DataType": "Number"
+      },
+      {
+        "Id": 252,
+        "Name": "MyVariable2",
+        "Value": "Result = Good",
+        "DataType": "String"
+      }
+    ]
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Returns the details of a script execution. Note that execution details may not be available if the device is offline.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/scripts/:scriptId/device/:deviceId/executions/:executionId
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+scriptId	string (uid)	yes	The ID of the script.
+deviceId	string (uid)	yes	The ID of the device.
+executionId	string (uid)	yes	The ID of the script execution.
+Response Data
+Property	Type	Description
+Id	string (uid)	The ID of the script execution.
+StartTime	string (datetime)	The date and time when the execution started.
+DurationInSeconds	float	The duration of the script execution in seconds, applicable when the execution is completed.
+State	string	The current state of the execution. Possible values include Running, Failed, Successful, and Stopped.
+Endtime	string (datetime)	The date and time when the execution finished, if applicable.
+Output	string	The output generated by the script.
+ExitCode	string	The exit code from the script execution.
+VariableOutputs	array of VariableOutput	A list of output variables resulting from the script execution.
+VariableOutput
+Property	Type	Description
+Id	number	The ID of the script variable.
+Name	string	The name of the script variable.
+Value	string	The value of the variable, converted to a string.
+DataType	string	The type of the variable. Possible values: Date, Number, Text, Boolean.
+Get All Scripts
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.automation.scripts.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetScripts raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": "11111111-1111-1111-1111-111111111111",
+      "Name": "Linux Only Script",
+      "Description": null,
+      "CategoryId": 123,
+      "CategoryName": "My Scripts",
+      "Platforms": ["Linux"],
+      "CreatedBy": "Author Name",
+      "IsBuiltIn": false
+    },
+    {
+      "Id": "11111111-1111-2222-2222-111111111111",
+      "Name": "Multiplatform Script",
+      "Description": "Supports Windows, Mac OS, Linux",
+      "CategoryId": 123,
+      "CategoryName": "My Scripts",
+      "Platforms": ["Windows", "Mac OS", "Linux"],
+      "CreatedBy": "Author Name",
+      "IsBuiltIn": false
+    }
+  ],
+  "Meta": {
+    "TotalCount": 2,
+    "ResponseCode": 200
+  }
+}
+
+
+
+Returns a list of automation scripts.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/scripts
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=Platforms/any(p: p eq 'Linux') and IsBuiltIn
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name asc
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	string	yes	yes	Script ID.
+Name	string	yes	yes	Name of the Script.
+Description	string	yes	yes	Description of the script.
+CategoryId	integer	yes	yes	The ID of the category folder.
+CategoryName	string	yes	yes	The Name of the category folder.
+Platforms	array of string	yes	no	A list of platforms supported by the Script. Possible values: Windows, Mac OS, Linux.
+CreatedBy	string	yes	yes	Name of the script creator. ‘Server’ if it’s built-in.
+IsBuiltIn	boolean	yes	yes	Indicates whether the script is built-in.
+Get a Specific Script
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.scripts('11111111-1111-1111-1111-111111111111').get()
+  print (result)
+
+except Exception as e:
+  print('GetScript raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": "11111111-1111-1111-1111-111111111111",
+    "Name": "Test Script",
+    "Description": "Test Script Description",
+    "CategoryId": 111,
+    "CategoryName": "MyCategory",
+    "CreatedBy": "Author Name",
+    "IsBuiltIn": false,
+    "InputVariables": [
+      {
+        "Id": 239,
+        "Name": "input1",
+        "CustomFieldId": 123,
+        "CustomFieldName": "GlobalCustomField",
+        "VariableType": "Text",
+        "DefaultValue": "1"
+      }
+    ],
+    "OutputVariables": [
+      {
+        "Id": 251,
+        "Name": "output1",
+        "CustomFieldId": null,
+        "CustomFieldName": null,
+        "VariableType": "Number",
+        "DefaultValue": "10"
+      }
+    ],
+    "ScriptItems": [
+      {
+        "Platform": "Windows",
+        "ScriptingLanguage": "PowerShell",
+        "ScriptText": "Write-Host \"Hello\"\nStart-Process -FilePath \"$env:PWY_HOME\\CLI.exe\" -ArgumentList (\"setVariable output1 \"\"15\"\"\") -Wait"
+      }
+    ]
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+} 
+
+
+Returns the automation script details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/automation/scripts/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string (uid)	yes	The value of the Script ID.
+Response Data
+Property	Type	Description
+Id	string	Script ID.
+Name	string	Name of the script.
+Description	string	Description of the script.
+CategoryId	integer	The ID of the category folder.
+CategoryName	string	The name of the category folder.
+CreatedBy	string	The name of the script creator. Server if it’s built-in.
+IsBuiltIn	boolean	Indicates whether the script is built-in.
+InputVariables	array of ScriptVariable	A list of input variables accepted by the script.
+OutputVariables	array of ScriptVariable	A list of variables output by the script.
+ScriptItems	array of ScriptItem	A list of script code items targeting different platforms.
+ScriptVariable
+Property	Type	Description
+Id	number	The ID of the script variable.
+Name	string	The name of the script variable.
+CustomFieldId	number	The ID of the Custom Field related to the variable. null if no Custom Field is assigned.
+CustomFieldName	string	The name of the Custom Field related to the variable. null if no Custom Field is assigned.
+VariableType	string	The type of the variable. Possible values: Date, Number, Text, Boolean.
+DefaultValue	string	The default value of the variable, converted to a string.
+ScriptItem
+Property	Type	Description
+Platform	string	Possible values: Windows, Linux, Mac OS.
+ScriptingLanguage	string	Possible values: Batch, PowerShell, Bash, VBScript.
+ScriptText	string	The programming code of the script.
+Notifications
+Notify
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+requestBody = {
+  "InstanceId": "production_website_1",
+  "Title": "Runtime error",
+  "Message": "Cannot connect to the database.",
+  "Priority": "critical",
+}
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.notifications.post(requestBody)
+  print (result)
+
+except Exception as e:
+  print('Notify raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Meta": {
+    "ResponseCode": 200 
+  }  
+}   
+
+
+Creates a device notification.
+
+HTTP Request
+
+https://api.pulseway.com/v3/notifications
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+POST
+
+Request Body Parameters
+Name	Value	Required	Description
+InstanceId	string	yes	Identifier of the instance that triggered the notification. (maximum 100 characters)
+Title	string	yes	Notification title that is displayed in the PUSH notification.
+Message	string	no	Notification message appears in the Notification Detail view. Defaults to the title field. (maximum 5000 characters)
+Priority	string	no	Possible values: Low, Normal, Elevated, Critical. Defaults to Normal.
+Get All Notifications
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.notifications.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetNotifications raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{ 
+  "Data": [
+    {
+      "Id": 2750,
+      "Message": "Production Web Site Instance in group Web Sites cannot connect to the database",
+      "DateTime": 1463473104,
+      "Priority": "critical" 
+    },
+    {
+      "Id": 2749,
+      "Message": "Cannot connect to the database.",      
+      "DateTime": 1463473083,
+      "Priority": "critical" 
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 2
+  }
+}    
+
+
+Returns the device notifications.
+
+HTTP Request
+
+https://api.pulseway.com/v3/notifications
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: Id, Message, DateTime, Priority.	$filter=contains(tolower(Message), 'free space')
+$orderby	string	no	OData sorting. Sortable properties: Id, Message, DateTime, Priority.	$orderby=Priority
+Get a Specific Notification
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.notifications('123').get()
+  print (result)
+
+except Exception as e:
+  print('GetNotification raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{  
+  "Data": {
+    "ComputerIdentifier": "2e2e8f85-267b-49d5-b6bc-0e6f483185e2",
+    "Read": true,
+    "Id": 123,
+    "Message": "The free space on disk drive C: on the computer 'MyComputer' in group 'MyOrg - MySite - MyGroup' is below 9% (29.94 GB free of 476.31 GB).",
+    "DateTime": "2024-01-01T12:00:00Z",
+    "Priority": "elevated"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Returns the notification details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/notifications/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the notification identifier
+Delete a Specific Notification
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.notifications('2643').delete()
+  print (result)
+
+except Exception as e:
+  print('DeleteNotification raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Deletes a specific notification.
+
+HTTP Request
+
+https://api.pulseway.com/v3/notifications/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+DELETE
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the notification identifier
+Notification Webhooks
+Get All Notification Webhooks
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.notifications.webhooks.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetNotificationWebhooks raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": 101,
+      "Name": "MyNotificationWebhook1",
+      "Description": "Some Description",
+      "Priorities": ["Low", "Normal", "Elevated", "Critical"],
+      "OrganizationIds": null,
+      "Headers": { "MyHeader": "Value" },
+      "Url": "https://some-webhook-url/test1",
+      "CreatedAt": "2023-07-26T15:40:31",
+      "Language": "en"
+    },
+    {
+      "Id": 102,
+      "Name": "MyNotificationWebhook2",
+      "Description": null,
+      "Priorities": ["Elevated", "Critical"],
+      "OrganizationIds": [1002, 1003],
+      "Headers": null,
+      "Url": "https://some-webhook-url/test2",
+      "CreatedAt": "2023-07-26T16:40:31",
+      "Language": "de"
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 2
+  }  
+}
+
+
+Returns a list of Notification Webhooks.
+
+HTTP Request
+
+https://api.pulseway.com/v3/notifications/webhooks
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=Priorities/any(p: p eq 'Elevated')
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name asc
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	Webhook ID.
+Name	string	yes	yes	Webhook Name.
+Description	string	yes	yes	Webhook Description.
+Priorities	array of strings	yes	no	List of Notification Priorities that are sent through Webhook.
+OrganizationIds	array of integers	yes	no	List of Organization IDs used to limit scope of Notifications.
+Headers	key-value list	no	no	List of additional headers sent to the Target URL.
+Url	string	yes	yes	Webhook Target URL.
+CreatedAt	string	yes	yes	Creation date and time.
+Language	string	yes	yes	Language of Notifications send through webhook. Available values: en, de.
+Get a Specific Notification Webhook
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.notifications.webhooks('123').get()
+  print (result)
+
+except Exception as e:
+  print('GetNotificationWebhook raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 101,
+    "Name": "MyNotificationWebhook1",
+    "Description": "Some Description",
+    "Priorities": ["Low", "Normal", "Elevated", "Critical"],
+    "OrganizationIds": null,
+    "Headers": { "MyHeader": "Value" },
+    "Url": "https://some-webhook-url/test1",
+    "CreatedAt": "2023-07-26T15:40:31",
+    "Language": "en"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Returns the notification webhook details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/notifications/webhooks/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the Notification Webhook ID.
+Response Data
+Property	Type	Description
+Id	integer	Webhook ID.
+Name	string	Webhook Name.
+Description	string	Webhook Description.
+Priorities	array of strings	List of Notification Priorities that are sent through Webhook.
+OrganizationIds	array of integers	List of Organization IDs used to limit scope of Notifications.
+Headers	key-value list	List of additional headers sent to the Target URL.
+Url	string	Webhook Target URL.
+CreatedAt	string	Creation date and time.
+Language	string	Language of Notifications send through webhook. Available values: en, de.
+Create a Notification Webhook
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+headers = {
+  "CustomHeader": "CustomValue",
+}
+
+requestBody = {
+  "Name": "MyNotificationWebhook1",
+  "Description": "Some Description",
+  "Priorities": ["Low", "Normal", "Elevated", "Critical"],
+  "OrganizationIds": [123, 124],
+  "Headers": headers,
+  "Url": "https://some-webhook-url/test1",
+  "CreatedAt": "2023-07-26T15:40:31",
+  "Language": "en",
+}
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.notifications.webhooks.post(requestBody)
+  print (result)
+
+except Exception as e:
+  print('CreateNotificationWebhook raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "SecretKey": "0000000000000000000000000000000000000000000000000000000000000000",
+    "Id": 101,
+    "Name": "MyNotificationWebhook1",
+    "Description": "Some Description",
+    "Priorities": ["Low", "Normal", "Elevated", "Critical"],
+    "OrganizationIds": [123, 124],
+    "Headers": { "CustomHeader": "CustomValue" },
+    "Url": "https://some-webhook-url/test1",
+    "Language": "en",    
+    "CreatedAt": "2023-07-26T15:40:31"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Creates a Notification Webhook.
+
+HTTP Request
+
+https://api.pulseway.com/v3/notifications/webhooks
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+POST
+
+Request Body Parameters
+Name	Value	Required	Description
+Name	string	yes	Webhook Name. (maximum 100 characters)
+Description	string	no	Webhook Description. (maximum 255 characters)
+Priorities	array of strings	yes	List of Notification Priorities that are sent through the Webhook. Available values: Low, Normal, Elevated, Critical
+OrganizationIds	array of integers	no	List of Organization IDs used to limit the scope of Notifications. The scope is not limited if Organization IDs are null.
+Headers	key-value list	no	List of additional headers sent to the Target URL. (maximum 4000 characters)
+Url	string	yes	Webhook Target URL. It should start with “http://” or “https://” protocol. (maximum 2000 characters)
+Language	string	no	Language of Notifications title and message send through webhook. Available values: en, de. Default: en
+Response Data
+Name	Value	Description
+Id	string	Webhook ID.
+Name	string	Webhook Name.
+Description	string	Webhook Description.
+Priorities	array of strings	List of Notification Priorities that are sent through the Webhook.
+OrganizationIds	array of integers	List of Organization IDs used to limit the scope of Notifications.
+Headers	key-value list	List of additional headers sent to the Target URL.
+Url	string	Webhook Target URL.
+Language	string	Language of Notifications title and message send through webhook.
+CreatedAt	string	Creation date and time.
+SecretKey	string	Key that is used to calculate HMAC SHA-256 signature when sending Notifications to target URL.
+Webhook Message
+
+When a notification is created and matches all criteria specified in the webhook, a POST request will be sent to the specified Webhook URL. This request contains the following properties as part of the JSON Body:
+
+Name	Value	Description
+Id	int	Notification ID.
+Title	string	Notification Message Title.
+Message	string	Text of the Notification Message.
+DateTime	string	Notification creationg date and time in ISO format.
+Priority	string	Notification message priority. Possible values: Low, Normal, Elevated, Critical.
+DeviceIdentifier	string	ID of the device related to the Notification.
+OrganizationId	string	Organization ID of the related device.
+
+The request also contains an x-hmac-signature, which includes a base64 encoded SHA-256 hash based on the JSON body and Secret Key.
+
+Update a Notification Webhook
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+headers = {
+  "CustomHeader": "CustomValue",
+}
+
+requestBody = {
+  "Name": "MyNotificationWebhook1",
+  "Description": "Some Description",
+  "Priorities": ["Low", "Normal", "Elevated", "Critical"],
+  "OrganizationIds": [123, 124],
+  "Headers": headers,
+  "Url": "https://some-webhook-url/test1",
+  "CreatedAt": "2023-07-26T15:40:31",
+  "Language": "en",
+}
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.notifications.webhooks('123').put(requestBody)
+  print (result)
+
+except Exception as e:
+  print('CreateNotificationWebhook raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 101,
+    "Name": "MyNotificationWebhook1",
+    "Description": "Some Description",
+    "Priorities": ["Low", "Normal", "Elevated", "Critical"],
+    "OrganizationIds": [123, 124],
+    "Headers": { "CustomHeader": "CustomValue" },
+    "Url": "https://some-webhook-url/test1",
+    "Language": "en",
+    "UpdatedAt": "2023-07-26T15:40:31"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Updates a Notification Webhook.
+
+HTTP Request
+
+https://api.pulseway.com/v3/notifications/webhooks
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+PUT
+
+Request Body Parameters
+Name	Value	Required	Description
+Name	string	yes	Webhook Name. (maximum 100 characters)
+Description	string	no	Webhook Description. (maximum 255 characters)
+Priorities	array of strings	yes	List of Notification Priorities that are sent through the Webhook. Available values: Low, Normal, Elevated, Critical
+OrganizationIds	array of integers	no	List of Organization IDs used to limit the scope of Notifications. The scope is not limited if Organization IDs are null.
+Headers	key-value list	no	List of additional headers sent to the Target URL. (maximum 4000 characters)
+Url	string	yes	Webhook Target URL. It should start with “http://” or “https://” protocol. (maximum 2000 characters)
+Language	string	no	Language of Notifications title and message send through webhook. Available values: en, de. Default: en
+Response Data
+Name	Value	Description
+Id	string	Webhook ID.
+Name	string	Webhook Name.
+Description	string	Webhook Description.
+Priorities	array of strings	List of Notification Priorities that are sent through the Webhook.
+OrganizationIds	array of integers	List of Organization IDs used to limit the scope of Notifications.
+Headers	key-value list	List of additional headers sent to the Target URL.
+Url	string	Webhook Target URL.
+Language	string	Language of Notifications title and message send through webhook.
+CreatedAt	string	Creation date and time.
+Re-generate a Notification Webhook Secret Key
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.notifications.webhooks('123').regenerateSecretKey.post()
+  print (result)
+
+except Exception as e:
+  print('RegenerateSecretKey raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "SecretKey": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Re-generates a Notification Webhook Secret Key. This will cause the previous Secret Key to become outdated, and it will be replaced by a new one in the calculation of the x-hmac-signature header when sending a Notification Message to the Webhook URL.
+
+HTTP Request
+
+https://api.pulseway.com/v3/notifications/webhooks/:id/regenerateSecretKey
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+POST
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	Notification Webhook ID
+Response Data Fields
+Name	Value	Description
+SecretKey	string	Key that is used to calculate HMAC SHA-256 signature when sending Notifications to target URL.
+Delete a Specific Notification Webhook
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.notifications.webhooks('123').delete()
+  print (result)
+
+except Exception as e:
+  print('DeleteNotificationWebhook raised an exception.')
+  print(e)
+
+
+Deletes a Specific Notification Webhook.
+
+HTTP Request
+
+https://api.pulseway.com/v3/notifications/webhooks/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+DELETE
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	Notification Webhook ID
+Organizations
+Get All Organizations
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.organizations.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetOrganizations raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": 101,
+      "Name": "MyOrg1",
+      "HasCustomFields": false,
+      "PsaMappingId": null,
+      "PsaMappingType": null
+    },
+    {
+      "Id": 102,
+      "Name": "MyOrg2",
+      "HasCustomFields": true,
+      "PsaMappingId": 123,
+      "PsaMappingType": "AutoTask"
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 2
+  }  
+}
+
+
+Returns a list of organizations.
+
+HTTP Request
+
+https://api.pulseway.com/v3/organizations
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=PsaMappingType eq 'AutoTask' and contains(Name, 'myorg')
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name asc
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	Organization ID.
+Name	string	yes	yes	Organization Name.
+HasCustomFields	boolean	no	no	Shows if Organization has any Custom Fields assigned.
+PsaMappingId	integer	yes	yes	ID of PSA Mapping
+PsaMappingType	string	yes	yes	Type of PSA Mapping. Possible values: ConnectWise, AutoTask, null
+Get a Specific Organization
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.organizations('123').get()
+  print (result)
+
+except Exception as e:
+  print('GetOrganization raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 123,
+    "Name": "MyOrg2",
+    "HasCustomFields": true,
+    "PsaMappingId": 150,
+    "PsaMappingType": "AutoTask"
+  },
+  "Meta": {
+    "ResponseCode":200
+  }
+}   
+
+
+Returns the organization details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/organizations/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the organization ID.
+Response Data
+Property	Type	Description
+Id	integer	Organization ID.
+Name	string	Organization Name.
+HasCustomFields	boolean	Shows if Organization has any Custom Fields assigned.
+PsaMappingId	integer	ID of PSA Mapping
+PsaMappingType	string	Type of PSA Mapping. Possible values: ConnectWise, AutoTask, null
+Get Organization Custom Fields
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.organizations('123').customFields.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetOrganizationCustomFields raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [{
+      "Id": 569,
+      "Name": "CustomField_42",
+      "Value": "422",
+      "Type": "Text"
+  }, {
+      "Id": 643,
+      "Name": "SomeEmptyValue",
+      "Value": null,
+      "Type": "Text"
+  }, {
+      "Id": 850,
+      "Name": "Text Custom Field",
+      "Value": "None",
+      "Type": "Text"
+  }],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 3
+  }
+}   
+
+
+Return the organization custom fields.
+
+HTTP Request
+
+https://api.pulseway.com/v3/organizations/:id/customfields
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the organization ID.
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=Type eq 'Text'
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	Custom Field ID.
+Name	string	yes	yes	Custom Field Name.
+Value	string	yes	yes	Custom Fields Value converted to string.
+Type	string	yes	yes	Type of Custom Field. Possible values: Text, Number, Date, Boolean.
+Sites
+Get All Sites
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.sites.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetSites raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": 101,
+      "Name": "MySite1",
+      "ContactInformation": {
+        "Phone": "123213123",
+        "Fax": "1231231",
+        "Email": "email@contact.com",
+        "ContactName": "Contact Name",
+        "CountryCode": "PL",
+        "City": "City1",
+        "Address1": "AdressLine1",
+        "Address2": "AddressLine2",
+        "Zip": "123"
+      },
+      "ParentId" : 1,
+      "ParentName" : "MyOrg1",
+      "HasCustomFields": false,
+      "PsaMappingId": null,
+      "PsaIntegrationType": null
+    },
+    {
+      "Id": 102,
+      "Name": "MySite2",
+      "ParentId" : 1,
+      "ParentName" : "MyOrg1",
+      "HasCustomFields": true,
+      "PsaMappingId": 123,
+      "PsaIntegrationType": "AutoTask"
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 2
+  }  
+}
+
+
+Returns a list of Sites.
+
+HTTP Request
+
+https://api.pulseway.com/v3/sites
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=PsaIntegrationType eq 'AutoTask' and contains(Name, 'myorg')
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name asc
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	Site ID.
+Name	string	yes	yes	Site Name.
+ContactInformation	ContactInformation	no	no	Information on how to contact the site.
+ParentId	integer	yes	yes	Site’s parent organization id.
+ParentName	string	yes	yes	Site’s parent organization name.
+HasCustomFields	boolean	no	no	Shows if Site has any Custom Fields assigned.
+PsaMappingId	integer	yes	yes	ID of PSA Mapping
+PsaIntegrationType	string	yes	yes	Type of PSA Mapping. Possible values: ConnectWise, AutoTask, null
+ContactInformation
+Property	Type	Description
+Phone	string	Contact’s phone number.
+Fax	string	Contact’s fax number.
+Email	string	Contact’s email.
+ContactName	string	Contact’s name.
+CountryCode	string	Contact’s country code.
+City	string	Contact’s city.
+Address1	string	Contact’s Address Line 1.
+Address2	string	Contact’s Address Line 2.
+Zip	string	Contact’s Zip code.
+Get a Specific Site
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.sites('123').get()
+  print (result)
+
+except Exception as e:
+  print('GetSite raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 102,
+    "Name": "MySite2",
+    "ParentId" : 1,
+    "ContactInformation": {
+      "Phone": "123213123",
+      "Fax": "1231231",
+      "Email": "email@contact.com",
+      "ContactName": "Contact Name",
+      "CountryCode": "PL",
+      "City": "City1",
+      "Address1": "AdressLine1",
+      "Address2": "AddressLine2",
+      "Zip": "123"
+    },
+    "ParentName" : "MyOrg1",
+    "HasCustomFields": true,
+    "PsaMappingId": 123,
+    "PsaIntegrationType": "AutoTask"
+  },
+  "Meta": {
+    "ResponseCode":200
+  }
+}   
+
+
+Returns the Site details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/sites/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the Site ID.
+Response Data
+Property	Type	Description
+Id	integer	Site ID.
+Name	string	Site Name.
+ContactInformation	ContactInformation	Information on how to contact the site.
+ParentId	int	Site’s parent organization id.
+ParentName	string	Site’s parent organization name.
+HasCustomFields	boolean	Shows if Site has any Custom Fields assigned.
+PsaMappingId	integer	ID of PSA Mapping
+PsaIntegrationType	string	Type of PSA Mapping. Possible values: ConnectWise, AutoTask, null
+ContactInformation
+Property	Type	Description
+Phone	string	Contact’s phone number.
+Fax	string	Contact’s fax number.
+Email	string	Contact’s email.
+ContactName	string	Contact’s name.
+CountryCode	string	Contact’s country code.
+City	string	Contact’s city.
+Address1	string	Contact’s Address Line 1.
+Address2	string	Contact’s Address Line 2.
+Zip	string	Contact’s Zip code.
+Get Site Custom Fields
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.sites('123').customFields.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetSiteCustomFields raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [{
+      "Id": 569,
+      "Name": "CustomField_42",
+      "Value": "422",
+      "Type": "Text"
+  }, {
+      "Id": 643,
+      "Name": "SomeEmptyValue",
+      "Value": null,
+      "Type": "Text"
+  }, {
+      "Id": 850,
+      "Name": "Text Custom Field",
+      "Value": "None",
+      "Type": "Text"
+  }],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 3
+  }
+}   
+
+
+Return the Site custom fields.
+
+HTTP Request
+
+https://api.pulseway.com/v3/sites/:id/customfields
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the Site ID.
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=Type eq 'Text'
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	Custom Field ID.
+Name	string	yes	yes	Custom Field Name.
+Value	string	yes	yes	Custom Fields Value converted to string.
+Type	string	yes	yes	Type of Custom Field. Possible values: Text, Number, Date, Boolean.
+Groups
+Get All Groups
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.groups.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetGroups raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": 101,
+      "Name": "MyGroup1",
+      "ParentSiteId": 6979,
+      "ParentSiteName": "Some Site",
+      "ParentOrganizationId": 6978,
+      "ParentOrganizationName": "Some Org",
+      "Notes": null,
+      "HasCustomFields": false,
+      "PsaMappingId": null,
+      "PsaMappingType": null
+    },
+    {
+      "Id": 102,
+      "Name": "MyGroup2",
+      "ParentSiteId": 6979,
+      "ParentSiteName": "Some Site",
+      "ParentOrganizationId": 6978,
+      "ParentOrganizationName": "Some Org",
+      "Notes": "Some Notes",
+      "HasCustomFields": true,
+      "PsaMappingId": 123,
+      "PsaMappingType": "AutoTask"
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 2
+  }  
+}
+
+
+Returns a list of groups.
+
+HTTP Request
+
+https://api.pulseway.com/v3/groups
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=PsaMappingType eq 'AutoTask' and contains(Name, 'MyGroup')
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name asc
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	Group ID.
+Name	string	yes	yes	Group Name.
+ParentSiteId	integer	yes	yes	Id of the parent Site.
+ParentSiteName	string	yes	yes	Name of the parent Site.
+ParentOrganizationId	integer	yes	yes	Id of the parent Organization.
+ParentOrganizationName	string	yes	yes	Name of the parent Organization.
+Notes	string	yes	yes	Group Notes.
+HasCustomFields	boolean	no	no	Shows if Group has any Custom Fields assigned.
+PsaMappingId	integer	yes	yes	ID of PSA Mapping
+PsaMappingType	string	yes	yes	Type of PSA Mapping. Possible values: ConnectWise, AutoTask, null
+Get a Specific Group
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.groups('123').get()
+  print (result)
+
+except Exception as e:
+  print('GetGroup raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 123,
+    "Name": "MyGroup2",
+    "ParentSiteId": 6979,
+    "ParentSiteName": "Some Site",
+    "ParentOrganizationId": 6978,
+    "ParentOrganizationName": "Some Org",
+    "Notes": "Some Notes",
+    "HasCustomFields": true,
+    "PsaMappingId": 123,
+    "PsaMappingType": "AutoTask",
+    "Packages": [
+      {
+        "Type": "windows_agent_x64",
+        "Name": "Windows (64 bit)"
+      },
+      {
+        "Type": "windows_agent_x86",
+        "Name": "Windows (32 bit)"
+      }
+    ]
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Returns the group details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/groups/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the group ID.
+Response Data
+Property	Type	Description
+Id	integer	Group ID.
+Name	string	Group Name.
+ParentSiteId	integer	Id of the parent Site.
+ParentSiteName	string	Name of the parent Site.
+ParentOrganizationId	integer	Id of the parent Organization.
+ParentOrganizationName	string	Name of the parent Organization.
+Notes	string	Group Notes.
+HasCustomFields	boolean	Shows if Group has any Custom Fields assigned.
+PsaMappingId	integer	ID of PSA Mapping.
+PsaMappingType	string	Type of PSA Mapping. Possible values: ConnectWise, AutoTask, null.
+Packages	array of GroupPackage	List of packages available to download.
+GroupPackage
+Property	Type	Description
+Type	string	Download Package type. Download URL can be requested via api/v3/groups/:id/package/:type call.
+Name	string	Download Package name.
+Get Group Custom Fields
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.groups('123').customFields.get()
+  print (result)
+
+except Exception as e:
+  print('GetGroupCustomFields raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [{
+    "Id": 569,
+    "Name": "CustomField_42",
+    "Value": "422",
+    "Type": "Text"
+  }, {
+    "Id": 643,
+    "Name": "SomeEmptyValue",
+    "Value": null,
+    "Type": "Text"
+  }, {
+    "Id": 850,
+    "Name": "Text Custom Field",
+    "Value": "None",
+    "Type": "Text"
+  }],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 3
+  }
+}   
+
+
+Return the group custom fields.
+
+HTTP Request
+
+https://api.pulseway.com/v3/groups/:id/customfields
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the group ID.
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=Type eq 'Text'
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	Custom Field ID.
+Name	string	yes	yes	Custom Field Name.
+Value	string	yes	yes	Custom Fields Value converted to string.
+Type	string	yes	yes	Type of Custom Field. Possible values: Text, Number, Date, Boolean.
+Get a Group Package
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.groups('123').package.windows_agent_x64.get()
+  print (result)
+
+except Exception as e:
+  print('GetGroupPackage raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Name": "Windows (64 bit)",
+    "Url": "https://server-name/installer?type=windows_agent_x64&secret=00000000000000000000000000000000"
+  },
+  "Meta": {
+    "ResponseCode":200
+  }
+}   
+
+
+Returns the Name and Download URL for Group install package.
+
+HTTP Request
+
+https://api.pulseway.com/v3/groups/:id/package/:packageType
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the group ID.
+packageType	string	yes	Type of install package. Allowed values: windows_agent_x64, windows_agent_x86
+Response Data
+Property	Type	Description
+Name	string	Package name.
+Url	string	Package Download URL.
+Custom Fields
+Get All Custom Fields
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.customFields.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetCustomFields raised an exception.')
+  print(e)
+
+
+Returns a list of Custom Fields.
+
+HTTP Request
+
+https://api.pulseway.com/v3/customFields
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=Contexts/any(p: p eq 'Global') and ExpirationDate eq null
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name asc
+Response Data
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	Custom Field ID.
+Name	string	yes	yes	Custom Field Name.
+Description	string	yes	yes	Custom Field Description.
+Type	string	yes	yes	Custom Field Type. Possible values: Text, Number, Date, Boolean.
+DefaultValue	string	yes	yes	Default value for assigning Custom Field.
+GlobalValue	string	yes	yes	Value specified for the Global context.
+IsReadOnly	boolean	yes	yes	Specifies if Custom Field value cannot be changed.
+Context	array of string	yes	no	List of context the custom field can be attached to. Possible values: Global, Organization, Site, Group, Device.
+ExpirationDate	string	yes	yes	Date of Custom Field expiration.
+CreatedAt	string	yes	yes	Creation date and time.
+Get a Specific Custom Field
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.customFields('123').get()
+  print (result)
+
+except Exception as e:
+  print('GetCustomField raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 850,
+    "Name": "Custom Field 1",
+    "Description": "Custom Field Description",
+    "Type": "Text",
+    "DefaultValue": "None",
+    "GlobalValue": null,
+    "IsReadOnly": false,
+    "Contexts": [
+        "Organization",
+        "Device"
+    ],
+    "ExpirationDate": null,
+    "CreatedAt": "2023-05-09T15:27:26Z"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Returns the custom field details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/customFields/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	integer	yes	The value of the Custom Field ID.
+Response Data
+Property	Type	Description
+Id	integer	Custom Field ID.
+Name	string	Custom Field Name.
+Description	string	Custom Field Description.
+Type	string	Custom Field Type. Possible values: Text, Number, Date, Boolean.
+DefaultValue	string	Default value for assigning Custom Field.
+GlobalValue	string	Value specified for the Global context.
+IsReadOnly	boolean	Specifies if Custom Field value cannot be changed.
+Context	array of string	List of context the custom field can be attached to. Possible values: Global, Organization, Site, Group, Device.
+ExpirationDate	string	Date of Custom Field expiration.
+CreatedAt	string	Creation date and time.
+Get Custom Field Usage
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.customFields('123').usage.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetCustomFieldUsage raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "UsageContextType": "Organization",
+      "ContextItemId": "6978",
+      "Value": "CustomFieldValue"
+    },
+    {
+      "UsageContextType": "Group",
+      "ContextItemId": "123",
+      "Value": "CustomFieldValue 2"
+    },
+    {
+      "UsageContextType": "Device",
+      "ContextItemId": "11111111-2222-3333-4444-555555555555",
+      "Value": "CustomFieldValue 3"
+    },
+    {
+      "UsageContextType": "Script",
+      "ContextItemId": "11261"
+    },
+    {
+      "UsageContextType": "Scope",
+      "ContextItemId": "332"
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 5
+  }  
+}
+
+
+Returns a list of places where the Custom Field is used.
+
+Organizations, Sites, Groups, Devices, Scopes that are inaccessible to the API token are not displayed in the response.
+
+HTTP Request
+
+https://api.pulseway.com/v3/customFields/:id/usage
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=50
+$skip	integer	no	Starting position. Default value: 0	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=UsageContextType eq 'Scope'
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=UsageContextType asc, ContextItemId asc
+Response Data
+Property	Type	Filterable	Sortable	Description
+UsageContextType	string	yes	yes	Possible values: Organization, Site, Group, Device, Scope, Script.
+ContextItemId	string	yes	yes	ID of the related context item where the Custom Field is used.
+Value	string	yes	yes	Value of the assigned Custom Field. Shown only if applicable.
+Assign a Custom Field
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+requestBody = {
+  "ContextType": "Organization",
+  "ContextItemId": "6978",
+  "UseDefaultValue": false,
+  "Value": "SomeValue",
+}
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.customFields('123').assign.post(requestBody)
+  print (result)
+
+except Exception as e:
+  print('AssignCustomField raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "ContextType": "Organization",
+    "ContextItemId": "6978",
+    "Id": 808,
+    "Name": "Some Custom Field",
+    "Value": "SomeValue",
+    "Type": "Text"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Assigns a Pulseway Custom Field.
+
+HTTP Request
+
+https://api.pulseway.com/v3/customFields/:customFieldId/assign
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+POST
+
+JSON Body Fields
+Name	Value	Required	Description
+ContextType	string	true	The target context type. Possible values: Organization, Site, Group, Device.
+ContextItemId	string	true	The ID of the related context item.
+UseDefaultValue	boolean	false	If true, the default value from the Custom Field settings will be utilized.
+Value	string	false	The Custom Field value to be assigned. This field is required if UseDefaultValue is false.
+
+If a Custom Field assignment already exists for the specified ContextType and ContextItemId, a 400 Bad Request error will be returned.
+
+Response Data Fields
+Name	Value	Description
+ContextType	string	The target context type.
+ContextItemId	string	The ID of the related context item.
+Id	int	The ID of the Custom Field.
+Name	string	The name of the Custom Field.
+Value	string	The updated value.
+Type	string	The type of the Custom Field.
+Update an Assigned Custom Field
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+requestBody = {
+  "ContextType": "Organization",
+  "ContextItemId": "6978",
+  "UseDefaultValue": false,
+  "Value": "SomeValue",
+}
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.customFields('123').updateAssigned.put(requestBody)
+  print (result)
+
+except Exception as e:
+  print('UpdateAssignedCustomField raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "ContextType": "Organization",
+    "ContextItemId": "6978",
+    "Id": 808,
+    "Name": "Some Custom Field",
+    "Value": "SomeValue",
+    "Type": "Text"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Updates the Value of a Pulseway Custom Field.
+
+HTTP Request
+
+https://api.pulseway.com/v3/customFields/:customFieldId/updateAssigned
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+PUT
+
+JSON Body Fields
+Name	Value	Required	Description
+ContextType	string	true	The target context type. Possible values: Organization, Site, Group, Device.
+ContextItemId	string	true	The ID of the related context item.
+UseDefaultValue	boolean	false	If true, the default value from the Custom Field settings will be utilized.
+Value	string	false	The Custom Field value to be updated. This field is required if UseDefaultValue is false.
+
+The system retrieves an assignment using the CustomFieldId from the URL path and both ContextType and ContextItemId from the JSON body. If no assignment exists, it will return a 400 Bad Request error.
+
+Response Data Fields
+Name	Value	Description
+ContextType	string	The target context type.
+ContextItemId	string	The ID of the related context item.
+Id	int	The ID of the Custom Field.
+Name	string	The name of the Custom Field.
+Value	string	The updated value.
+Type	string	The type of the Custom Field.
+Unassign a Custom Field
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+requestBody = {
+  "ContextType": "Organization",
+  "ContextItemId": "6978",
+}
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.automation.customFields('123').unassign.post(requestBody)
+  print (result)
+
+except Exception as e:
+  print('UnassignCustomField raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": "The Custom Field has been successfully unassigned.",
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Unassigns a Pulseway Custom Field.
+
+HTTP Request
+
+https://api.pulseway.com/v3/customFields/:customFieldId/unassign
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+POST
+
+JSON Body Fields
+Name	Value	Required	Description
+ContextType	string	true	Target context type. Possible values: Organization, Site, Group, Device
+ContextItemId	string	true	ID of the related context item.
+Scopes
+Get All Scopes
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.scopes.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetScopes raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "Id": 201,
+      "Name": "scope 1",
+      "Description": null,
+      "UpdatedAt": "2019-05-16T14:14:39"
+    },
+    {
+      "Id": 210,
+      "Name": "scope 2",
+      "Description": "My Scope",
+      "UpdatedAt": "2023-05-08T06:31:59"
+    },
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 2
+  }
+}
+
+
+Returns a list of Scopes.
+
+HTTP Request
+
+https://api.pulseway.com/v3/scopes
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position.	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=contains(Description, 'My Scope')
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=Name asc
+Scope Response Properties
+Property	Type	Filterable	Sortable	Description
+Id	integer	yes	yes	Scope ID.
+Name	string	yes	yes	Scope Name.
+Description	string	yes	yes	Description of the Scope.
+UpdatedAt	string	yes	yes	Date and time of the last update.
+Get a Specific Scope
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.scopes('123').get()
+  print (result)
+
+except Exception as e:
+  print('GetScope raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Criteria": [
+      {
+        "Type": "Custom Field at least one matching",
+        "Identifier": "854",
+        "CustomFieldOperator": "IsEqualTo",
+        "CustomFieldName": "Custom Field 2",
+        "CustomFieldValue": "67"
+      },
+      {
+        "Type": "Custom Field at least one matching",
+        "Identifier": "851",
+        "CustomFieldOperator": "IsEmpty",
+        "CustomFieldName": "Date Custom Field"
+      },
+      {
+        "Type": "Description contains",
+        "Identifier": "22H2"
+      },
+      {
+        "Type": "Device Type",
+        "Identifier": "Windows"
+      },
+      {
+        "Type": "Organization",
+        "Identifier": "6965"
+      },
+      {
+        "Type": "Organization",
+        "Identifier": "6978"
+      },
+      {
+        "Type": "Site",
+        "Identifier": "6962"
+      },
+      {
+        "Type": "Tag all matching",
+        "Identifier": "Test"
+      }
+    ],
+    "TotalDevices": 1,
+    "Id": 123,
+    "Name": "Scope Name",
+    "Description": "Scope Description",
+    "UpdatedAt": "2023-10-20T14:22:18"
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}   
+
+
+Returns the scope details.
+
+HTTP Request
+
+https://api.pulseway.com/v3/scopes/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The value of the Scope ID.
+Response Data
+Property	Type	Description
+Id	integer	Scope ID.
+Name	string	Scope Name.
+Description	string	Description of the Scope.
+UpdatedAt	string	Date and time of the last update.
+Criteria	array of CriteriaItem	List of criteria items used for device matching.
+TotalDevices	integer	Shows how many devices match the Scope criteria.
+CriteriaItem
+Property	Type	Description
+Type	string	Matching type. For possible values, see the CriteriaItem Types table below.
+Identifier	string	Value of the Criteria Item rule. Depends on the specific Type: refer to the CriteriaItem Types table below.
+CustomFieldOperator	string	Possible values: IsEmpty, IsEqualTo, IsNotEmpty, IsNotEqualTo. Visible only for Custom Field criteria items.
+CustomFieldName	string	Name of the Custom Field. Visible only for Custom Field criteria items.
+CustomFieldValue	string	Value required for the Custom Field rule to match. Visible only when CustomFieldOperator is IsEqualTo or IsNotEqualTo.
+CriteriaItem Types
+Type	Identifier	Description
+Description contains	Text to match within Description	The device description must contain the specified text to satisfy the criteria.
+Organization	Organization ID	The device should belong to any Organization, Site, or Group specified in the criteria to satisfy the criteria.
+Site	Site ID	The device should belong to any Organization, Site, or Group specified in the criteria to satisfy the criteria.
+Group	Group ID	The device should belong to any Organization, Site, or Group specified in the criteria to satisfy the criteria.
+Device Type	Device Type	Types of endpoints to be included in this Scope.
+Tag all matching	Tag Name	All tags from the criteria should be present on the device.
+Tag at least one matching	Tag Name	At least one tag from the criteria should be applied to the device.
+Custom Field all matching	Custom Field ID	All Custom Field rules from the criteria must match.
+Custom Field at least one matching	Custom Field ID	At least one Custom Field rule from the criteria must match.
+Get Scope Usage
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  # use $top & $skip parameters
+  params = {'$top': '50', '$skip': '0'}
+  result = api.scopes('123').usage.get(**params)
+  print (result)
+
+except Exception as e:
+  print('GetScopeUsage raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": [
+    {
+      "UsageContextType": "Workflow",
+      "ContextItemId": 32
+    },
+    {
+      "UsageContextType": "Task",
+      "ContextItemId": 10017
+    },
+    {
+      "UsageContextType": "Task",
+      "ContextItemId": 10018
+    }
+  ],
+  "Meta": {
+    "ResponseCode": 200,
+    "TotalCount": 3
+  }  
+}
+
+
+Returns a list of places where the Scope is used.
+
+HTTP Request
+
+https://api.pulseway.com/v3/scopes/:id/usage
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Query Parameters
+Parameter	Value	Required	Description	Example
+$top	integer	no	Maximum number of items to return, limited to 100. Default value: 100	$top=100
+$skip	integer	no	Starting position. Default value: 0	$skip=100
+$filter	string	no	OData filters. Filterable properties: see below.	$filter=UsageContextType eq 'Task'
+$orderby	string	no	OData sorting. Sortable properties: see below.	$orderby=UsageContextType asc, ContextItemId asc
+Response Data
+Property	Type	Filterable	Sortable	Description
+UsageContextType	string	yes	yes	Possible values: Workflow, Task.
+ContextItemId	number	yes	yes	ID of the related context item where the Scope is used.
+Patch Management
+Get Patch Management Policy
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.patchmanagement.policies('199').get()
+  print (result)
+
+except Exception as e:
+  print('GetPolicy raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 199,
+    "Name": "My Patch Management Policy",
+    "Description": "Every saturday at 23:30",
+    "GeneralSettings": {
+      "CreateRestorePoint": true,
+      "RebootIfRequire": true,
+      "NotifyLoggedInUsers": false,
+      "Schedule": {
+        "Id": -1,
+        "Type": {
+          "Id": 1,
+          "Text": "Schedule"
+        },
+        "FrequencyInterval": {
+          "Id": 2,
+          "Text": "Weekly"
+        },
+        "FrequencySubinterval": 32,
+        "Frequency": 1,
+        "StartDate": 1576798260
+      },
+      "RandomizeUpdateInterval": false,
+      "StartPatchingIfScheduledMissed": false,
+      "SoftwareSchedule": null,
+      "RebootOption": "DO_NOT_REBOOT",
+      "RebootSchedule": null,
+      "AutomaticUpdate": "AUTO_DOWNLOAD",
+      "ActiveHours": null,
+      "DeferQualityUpdates": false,
+      "QualityUpdatesDeferPeriod": 0,
+      "DeferFeatureUpdates": false,
+      "FeatureUpdatesDeferPeriod": 0,
+      "IncludeDriversUpdate": false,
+      "PreventFromExecutingAndConfiguringWindowsUpdates": false,
+      "MacOSUpdateSettings": null,
+      "NotifyLoggedInUsersBeforeReboot": false,
+      "RebootPromptHoursBeforeReboot": 0,
+      "RebootImmediatelyIfScheduledMissed": false,
+      "NotificationSettings": null
+    },
+    "OsRules": [
+      {
+        "Field": "SEVERITY",
+        "Operator": "CONTAINS",
+        "Severity": "CRITICAL",
+        "Action": "APPROVE_AND_INSTALL"
+      },
+      {
+        "Field": "SEVERITY",
+        "Operator": "CONTAINS",
+        "Severity": "IMPORTANT",
+        "Action": "APPROVE_AND_INSTALL"
+      },
+      {
+        "Field": "SEVERITY",
+        "Operator": "CONTAINS",
+        "Severity": "OPTIONAL",
+        "Action": "SKIP_AND_REVIEW"
+      }
+    ],
+    "SoftwareRules": [
+      {
+        "ProductId": "7-zip-x64",
+        "ProductName": "7-Zip (64-bit)",
+        "Action": "INSTALL_AND_UPDATE"
+      }
+    ]
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Returns the details of the patch management policy.
+
+HTTP Request
+
+https://api.pulseway.com/v3/patchmanagement/policies/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The ID of the Patch Management Policy.
+Response Data
+Property	Type	Description
+Id	integer	The policy ID.
+Name	string	The name of the policy.
+Description	string	A description of the policy.
+GeneralSettings	object	General settings for the policy.
+OsRules	array of object	A list of rules for operating system updates.
+SoftwareRules	array of object	A list of rules for software product updates.
+Get Global Rules
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.patchmanagement.globalrules.get()
+  print (result)
+
+except Exception as e:
+  print('GetEmvironmentInformation raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "OsRules": [
+      {
+        "Field": "CATEGORY",
+        "Operator": "CONTAINS",
+        "Category": "FEATURE_PACK",
+        "Action": "APPROVE_AND_INSTALL"
+      },
+      {
+        "Field": "DESCRIPTION",
+        "Operator": "CONTAINS",
+        "Contains": "minor",
+        "Action": "REJECT_AND_HIDE"
+      },
+      {
+        "Field": "CVSS_SCORE",
+        "Operator": "GREATER_THAN",
+        "Contains": "7",
+        "Action": "APPROVE_AND_INSTALL"
+      }
+    ],
+    "SoftwareRules": [
+      {
+        "ProductId": "7-zip-x64",
+        "ProductName": "7-Zip (64-bit)",
+        "Action": "INSTALL_AND_UPDATE"
+      }
+    ]
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Returns the global rules for patch management. The global rules get automatically applied ahead of all policy rules and are evaluated in a top-down order.
+
+HTTP Request
+
+https://api.pulseway.com/v3/patchmanagement/globalrules/
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Response Data
+Property	Type	Description
+OsRules	array of object	A list of global rules for operating system updates.
+SoftwareRules	array of object	A list of global rules for updates to software products.
+Endpoint Protection
+Get Endpoint Protection Policy
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.endpointprotection.policies('315').get()
+  print (result)
+
+except Exception as e:
+  print('GetPolicy raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "Id": 315,
+    "Name": "My Ransomware Detection Policy",
+    "Type": "Ransomware Detection",
+    "Description": "Test",
+    "Settings": {
+        "DetectionNotificationPriority": "CRITICAL",
+        "WatchAllDrives": true,
+        "WatchPaths": [],
+        "ExcludedFolders": [],
+        "ExcludedFileExtensions": [],
+        "KillDetectedProcs": true,
+        "IsolateNetwork": true,
+        "Shutdown": false
+    }
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Returns the details of the endpoint protection policy.
+
+HTTP Request
+
+https://api.pulseway.com/v3/endpointprotection/policies/:id
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Route Parameters
+Parameter	Value	Required	Description
+id	string	yes	The ID of the endpoint protection policy.
+Response Data
+Property	Type	Description
+Id	integer	The Policy ID.
+Name	string	The name of the policy.
+Type	string	The type of endpoint protection policy. Possible values include: Ransomware Detection, Webroot, etc.
+Description	string	A description of the policy.
+Settings	object	The settings for the policy, depending on its type.
+Environment
+Get Environment Information
+import slumber
+
+ENDPOINT = "https://api.pulseway.com/v3/"
+TOKEN_ID = "TOKEN_ID"
+TOKEN_SECRET = "TOKEN_SECRET"
+
+try:
+  api = slumber.API(ENDPOINT, auth=(TOKEN_ID, TOKEN_SECRET))
+  result = api.environment.get()
+  print (result)
+
+except Exception as e:
+  print('GetEnvironmentInformation raised an exception.')
+  print(e)
+
+
+The above command returns JSON structured like this:
+
+{
+  "Data": {
+    "ProductVersion": "1.1.0 build 123 release 1001, US",
+    "CustomerId": "customer-instance.com",
+    "CustomerName": "Some Customer / Some Company.",
+    "ServerType": "SaaS",
+    "Language": "en",
+    "License": {
+      "ExpirationDate": "2024-12-01T00:00:00",
+      "UserAccounts": {
+        "TotalInUse": 156,
+        "Limit": 1000
+      },
+      "Devices": {
+        "TotalInUse": 1477,
+        "Limit": 10000
+      },
+      "RemoteDesktops": {
+        "Limit": 3
+      },
+      "Webroot": {
+        "Devices": {
+          "TotalInUse": 0,
+          "Limit": 10000
+        },
+        "ExpirationDate": "2024-12-01T00:00:00"
+      },
+      "PatchManagement": {
+        "Devices": {
+          "TotalInUse": 0,
+          "Limit": 5000
+        },
+        "ExpirationDate": "2098-01-01T00:00:00"
+      },
+      "ClientPortal": {
+        "Users": {
+          "TotalInUse": 8
+        }
+      },
+      "Bitdefender": {
+        "Devices": {
+          "TotalInUse": 10,
+          "Limit": 10
+        },
+        "ExpirationDate": "2023-02-24T00:00:00"
+      },
+      "RansomwareProtection": {
+        "Devices": {
+          "TotalInUse": 0,
+          "Limit": 100
+        },
+        "ExpirationDate": "2024-11-24T00:00:00"
+      }
+    }
+  },
+  "Meta": {
+    "ResponseCode": 200
+  }
+}
+
+
+Returns environment information for the instance.
+
+HTTP Request
+
+https://api.pulseway.com/v3/environment/
+
+ If you host your own Pulseway Enterprise Server, use “https://your-server-name/api/v3/” as base URL.
+HTTP Verb
+
+GET
+
+Response Data
+Property	Type	Description
+ProductVersion	string	Version of the product, including the server region.
+CustomerId	string	Unique identifier for the customer instance.
+CustomerName	string	Name and company associated with the customer.
+ServerType	string	Type of the server hosting: either SaaS or On-Prem.
+Language	string	Default language of the server in two-letter abbreviated format (e.g., en).
+License	object	Information regarding license expiration dates and allocations.
+Errors
+
+Example of an unsuccessful response:
+
+{
+  "Data": null,
+  "Meta": {
+    "ResponseCode": 404,
+    "ErrorMessage": "Entity is not found."
+  }
+}
+
+
+Pulseway REST API uses conventional HTTP response codes to indicate success or failure of an API request.
+
+In general, codes in the 2xx range indicate success, codes in the 4xx range indicate a validation error that resulted from provided information (e.g. a required parameter was missing, invalid characters used, etc.), and codes in the 5xx range indicate an error with Pulseway’s servers.
+
+Error Code	Meaning
+200	OK
+400	Bad Request
+401	Unauthorized
+403	Request Failed
+404	Not Found
+500	Internal Error
+502	Internal Error
+503	Internal Error
+504	Internal Errors
+PowerShell
+cURL
+Python
+Node.js
+PHP
+C#
+Java
