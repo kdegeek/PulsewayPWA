@@ -7,8 +7,9 @@ from datetime import datetime, timedelta
 from ..database import SessionLocal
 from ..models.database import Device, Notification, Organization, Site, Group
 from pydantic import BaseModel
+from ..security import get_current_active_api_key
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(get_current_active_api_key)])
 
 # Pydantic models for monitoring responses
 class DashboardSummary(BaseModel):

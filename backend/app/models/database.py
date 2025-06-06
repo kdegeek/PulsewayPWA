@@ -177,3 +177,12 @@ class Workflow(Base):
     workflow_updated_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+class APIKey(Base):
+    __tablename__ = "api_keys"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    hashed_key = Column(String, unique=True, index=True, nullable=False)
+    name = Column(String, nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
