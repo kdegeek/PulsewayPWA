@@ -7,8 +7,9 @@ from ..models.database import Device, DeviceAsset, Notification, Organization, S
 from ..pulseway.client import PulsewayClient
 from pydantic import BaseModel
 from datetime import datetime
+from ..security import get_current_active_api_key
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(get_current_active_api_key)])
 
 # Pydantic models for API responses
 class DeviceSummary(BaseModel):
