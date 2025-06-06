@@ -1,5 +1,5 @@
 # app/api/scripts.py
-from fastapi import APIRouter, Depends, HTTPException, Query, Body
+from fastapi import APIRouter, Depends, HTTPException, Query, Body, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
 from ..database import SessionLocal
@@ -61,9 +61,8 @@ def get_db():
         db.close()
 
 # Dependency to get Pulseway client
-def get_pulseway_client():
-    from ..main import app
-    return app.state.pulseway_client
+def get_pulseway_client(request: Request) -> PulsewayClient:
+    return request.app.state.pulseway_client
 
 @router.get("/", response_model=List[ScriptSummary])
 async def get_scripts(
@@ -83,8 +82,21 @@ async def get_scripts(
     # Apply filters
     if platform:
         # Filter by platform in JSON array
-        query = query.filter(Script.platforms.contains([platform]))
-    
+        # The method to query JSON varies by database.
+        # For PostgreSQL, using has_key for string elements in a JSON array is common.
+        # For SQLite, a LIKE query on the text representation is a common fallback.
+        if db.bind.dialect.name == "sqlite":
+            # Using LIKE for SQLite. Ensure platform string is quoted inside the JSON array.
+            # e.g., searching for "Windows" in '["Windows", "Linux"]'
+            # This is somewhat fragile but a common workaround for SQLite JSON arrays.
+            query = query.filter(Script.platforms.astext.like(f'%"{platform}"%'))
+        else:
+            # For PostgreSQL and potentially other DBs with good JSON support
+            # This checks if the platform string is an element in the JSON array.
+            query = query.filter(Script.platforms.has_key(platform))
+            # An alternative for some backends might be func.json_contains(Script.platforms, f'"{platform}"')
+            # or specific array functions. has_key is generally for presence of a key or an element.
+
     if category:
         query = query.filter(Script.category_name.ilike(f"%{category}%"))
     

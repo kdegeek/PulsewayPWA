@@ -8,6 +8,28 @@ import time
 
 logger = logging.getLogger(__name__)
 
+# Custom Exception Classes
+class PulsewayClientError(Exception):
+    """Base exception for Pulseway client errors."""
+    pass
+
+class PulsewayAPIError(PulsewayClientError):
+    """General Pulseway API error (e.g., 400, 500 series)."""
+    pass
+
+class PulsewayAuthenticationError(PulsewayClientError):
+    """Pulseway API Authentication Error (401)."""
+    pass
+
+class PulsewayPermissionError(PulsewayClientError):
+    """Pulseway API Permission Error (403)."""
+    pass
+
+class PulsewayNotFoundError(PulsewayClientError):
+    """Pulseway API Resource Not Found Error (404)."""
+    pass
+
+
 class PulsewayClient:
     """Pulseway REST API Client"""
     
@@ -41,14 +63,42 @@ class PulsewayClient:
         
         try:
             response = self.session.request(method, url, **kwargs)
-            response.raise_for_status()
+
+            if response.status_code == 400:
+                logger.error(f"Pulseway API Bad Request (400): {method} {url} - Response: {response.text}")
+                raise PulsewayAPIError(f"Pulseway API Bad Request: {response.text}")
+            elif response.status_code == 401:
+                logger.error(f"Pulseway API Authentication Error (401): {method} {url} - Response: {response.text}")
+                raise PulsewayAuthenticationError(f"Pulseway API Authentication Error: {response.text}")
+            elif response.status_code == 403:
+                logger.error(f"Pulseway API Permission Error (403): {method} {url} - Response: {response.text}")
+                raise PulsewayPermissionError(f"Pulseway API Permission Error: {response.text}")
+            elif response.status_code == 404:
+                logger.error(f"Pulseway API Resource Not Found (404): {method} {url} - Response: {response.text}")
+                raise PulsewayNotFoundError(f"Pulseway API Resource Not Found: {response.text}")
+            elif response.status_code >= 500:
+                logger.error(f"Pulseway API Server Error ({response.status_code}): {method} {url} - Response: {response.text}")
+                raise PulsewayAPIError(f"Pulseway API Server Error ({response.status_code}): {response.text}")
+
+            response.raise_for_status()  # For other 4xx errors or if non-error codes are not 2xx.
+
+            # Check if response content is empty before trying to parse JSON
+            if not response.content:
+                logger.info(f"Empty response content for {method} {url}")
+                return {} # Or appropriate default for empty response
+
             return response.json()
-        except requests.exceptions.RequestException as e:
+
+        except requests.exceptions.HTTPError as e: # Catch HTTPError from raise_for_status()
+            logger.error(f"HTTP error during request: {method} {url} - {e} - Response: {e.response.text if e.response else 'No response body'}")
+            # You might want to wrap this in a PulsewayAPIError as well or handle specifically
+            raise PulsewayAPIError(f"HTTP error: {e} - {e.response.text if e.response else 'No response body'}") from e
+        except requests.exceptions.RequestException as e: # Catch other request exceptions (timeout, connection error, etc.)
             logger.error(f"Request failed: {method} {url} - {e}")
-            raise
-        except ValueError as e:
-            logger.error(f"JSON decode failed: {e}")
-            raise
+            raise PulsewayClientError(f"Request failed: {e}") from e # Wrap in base client error
+        except ValueError as e: # JSONDecodeError inherits from ValueError
+            logger.error(f"JSON decode failed for {method} {url}: {e} - Response text: {response.text if 'response' in locals() else 'Response object not available'}")
+            raise PulsewayClientError(f"JSON decode failed: {e}") from e
     
     def get(self, endpoint: str, params: Optional[Dict] = None) -> Dict[str, Any]:
         """GET request"""
