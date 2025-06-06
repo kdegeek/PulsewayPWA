@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     # API Configuration
     api_title: str = "Pulseway Backend API"
     api_description: str = "Robust backend for interfacing with Pulseway instances"
-    api_version: str = "1.0.0"
+    api_version: str = "1.0.0-alpha.1"
 
     class Config:
         env_file = ".env"

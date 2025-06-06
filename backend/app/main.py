@@ -73,7 +73,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Pulseway Backend API",
     description="Robust backend for interfacing with Pulseway instances",
-    version="1.0.0",
+    version="1.0.0-alpha.1",
     lifespan=lifespan
 )
 
@@ -98,7 +98,7 @@ async def root():
     return {
         "status": "healthy",
         "message": "Pulseway Backend API is running",
-        "version": "1.0.0"
+        "version": "1.0.0-alpha.1"
     }
 
 @app.get("/api/health")
