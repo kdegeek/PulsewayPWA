@@ -35,7 +35,7 @@ def get_pulseway_client(request: Request) -> PulsewayClient:
 def get_device_service(db: Session = Depends(get_db), pulseway_client: PulsewayClient = Depends(get_pulseway_client)) -> DeviceService:
     return DeviceService(db=db, pulseway_client=pulseway_client)
 
-@router.get("/", response_model=List[DeviceDTO])
+@router.get("/", response_model=List[DeviceDTO], summary="List all devices", description="Retrieve a list of all devices, with optional filtering capabilities.", response_description="A list of devices.")
 async def get_devices(
     filters: DeviceFilters = Depends(),
     service: DeviceService = Depends(get_device_service)
@@ -44,13 +44,13 @@ async def get_devices(
     devices_db = service.get_devices_with_filters(filters)
     return [DeviceDTO.from_entity(device) for device in devices_db]
 
-@router.get("/stats", response_model=DeviceStatsDTO) # Updated response_model
+@router.get("/stats", response_model=DeviceStatsDTO, summary="Get device statistics", description="Retrieve statistics about the devices, such as counts by status.", response_description="Device statistics.") # Updated response_model
 async def get_device_stats(service: DeviceService = Depends(get_device_service)): # Inject service
     """Get device statistics and counts"""
     stats_data = service.get_device_statistics()
     return DeviceStatsDTO(**stats_data)
 
-@router.get("/{device_id}", response_model=DeviceDetailDTO) # Updated response_model
+@router.get("/{device_id}", response_model=DeviceDetailDTO, summary="Get device details", description="Retrieve detailed information about a specific device by its ID.", response_description="Detailed information about the device.") # Updated response_model
 async def get_device(
     device_id: str,
     service: DeviceService = Depends(get_device_service) # Inject service
@@ -63,7 +63,7 @@ async def get_device(
     
     return DeviceDetailDTO.from_entity(device_db)
 
-@router.post("/{device_id}/refresh", response_model=Dict[str, str]) # Updated response_model
+@router.post("/{device_id}/refresh", response_model=Dict[str, str], summary="Refresh device data", description="Refresh the data for a specific device from the Pulseway API.", response_description="Status of the refresh operation.") # Updated response_model
 async def refresh_device_data(
     device_id: str,
     service: DeviceService = Depends(get_device_service) # Inject service
@@ -82,12 +82,12 @@ async def refresh_device_data(
     
     return {"status": "success", "message": result["message"]} # Or simply return result
 
-@router.get("/{device_id}/notifications", response_model=List[NotificationDTO])
+@router.get("/{device_id}/notifications", response_model=List[NotificationDTO], summary="Get device notifications", description="Retrieve notifications for a specific device.", response_description="A list of notifications for the device.")
 async def get_device_notifications(
     device_id: str, 
     service: DeviceService = Depends(get_device_service), # Inject service
-    limit: int = Query(50, le=200),
-    offset: int = Query(0, ge=0)
+    limit: int = Query(50, le=200, description="Maximum number of notifications to return"),
+    offset: int = Query(0, ge=0, description="Offset for pagination")
 ):
     """Get notifications for a specific device"""
     try:
@@ -96,7 +96,7 @@ async def get_device_notifications(
     except ValueError as e: # Catch specific error from service
         raise HTTPException(status_code=404, detail=str(e))
 
-@router.get("/{device_id}/assets", response_model=DeviceAssetDTO)
+@router.get("/{device_id}/assets", response_model=DeviceAssetDTO, summary="Get device assets", description="Retrieve asset information for a specific device.", response_description="Asset information for the device.")
 async def get_device_assets(
     device_id: str, 
     service: DeviceService = Depends(get_device_service) # Inject service
@@ -110,61 +110,61 @@ async def get_device_assets(
 
 # The old refresh_device_data endpoint is replaced by the one above.
 
-@router.get("/search/{search_term}", response_model=List[DeviceDTO])
+@router.get("/search/{search_term}", response_model=List[DeviceDTO], summary="Search devices", description="Search for devices by name, description, or IP address.", response_description="A list of devices matching the search term.")
 async def search_devices(
     search_term: str,
     service: DeviceService = Depends(get_device_service), # Inject service
-    limit: int = Query(20, le=100) # Keep Query for parameter validation if needed
+    limit: int = Query(20, le=100, description="Maximum number of devices to return") # Keep Query for parameter validation if needed
 ):
     """Search devices by name, description, or IP address"""
     devices_db = service.search_devices_by_term(search_term=search_term, limit=limit)
     return [DeviceDTO.from_entity(device) for device in devices_db]
 
-@router.get("/organization/{org_name}", response_model=List[DeviceDTO])
+@router.get("/organization/{org_name}", response_model=List[DeviceDTO], summary="Get devices by organization", description="Retrieve all devices belonging to a specific organization.", response_description="A list of devices for the specified organization.")
 async def get_devices_by_organization(
     org_name: str,
     service: DeviceService = Depends(get_device_service), # Inject service
-    limit: int = Query(100, le=500),
-    offset: int = Query(0, ge=0)
+    limit: int = Query(100, le=500, description="Maximum number of devices to return"),
+    offset: int = Query(0, ge=0, description="Offset for pagination")
 ):
     """Get all devices for a specific organization"""
     devices_db = service.get_devices_by_organization_name(org_name=org_name, limit=limit, offset=offset)
     return [DeviceDTO.from_entity(device) for device in devices_db]
 
-@router.get("/site/{site_name}", response_model=List[DeviceDTO])
+@router.get("/site/{site_name}", response_model=List[DeviceDTO], summary="Get devices by site", description="Retrieve all devices belonging to a specific site.", response_description="A list of devices for the specified site.")
 async def get_devices_by_site(
     site_name: str,
     service: DeviceService = Depends(get_device_service), # Inject service
-    limit: int = Query(100, le=500),
-    offset: int = Query(0, ge=0)
+    limit: int = Query(100, le=500, description="Maximum number of devices to return"),
+    offset: int = Query(0, ge=0, description="Offset for pagination")
 ):
     """Get all devices for a specific site"""
     devices_db = service.get_devices_by_site_name(site_name=site_name, limit=limit, offset=offset)
     return [DeviceDTO.from_entity(device) for device in devices_db]
 
-@router.get("/alerts/critical", response_model=List[DeviceDTO])
+@router.get("/alerts/critical", response_model=List[DeviceDTO], summary="Get devices with critical alerts", description="Retrieve devices that currently have critical alerts.", response_description="A list of devices with critical alerts.")
 async def get_devices_with_critical_alerts(
     service: DeviceService = Depends(get_device_service), # Inject service
-    limit: int = Query(50, le=200)
+    limit: int = Query(50, le=200, description="Maximum number of devices to return")
 ):
     """Get devices with critical alerts"""
     devices_db = service.get_devices_with_critical_alerts(limit=limit)
     return [DeviceDTO.from_entity(device) for device in devices_db]
 
-@router.get("/alerts/elevated", response_model=List[DeviceDTO])
+@router.get("/alerts/elevated", response_model=List[DeviceDTO], summary="Get devices with elevated alerts", description="Retrieve devices that currently have elevated alerts.", response_description="A list of devices with elevated alerts.")
 async def get_devices_with_elevated_alerts(
     service: DeviceService = Depends(get_device_service), # Inject service
-    limit: int = Query(50, le=200)
+    limit: int = Query(50, le=200, description="Maximum number of devices to return")
 ):
     """Get devices with elevated alerts"""
     devices_db = service.get_devices_with_elevated_alerts(limit=limit)
     return [DeviceDTO.from_entity(device) for device in devices_db]
 
-@router.get("/status/offline", response_model=List[DeviceDTO])
+@router.get("/status/offline", response_model=List[DeviceDTO], summary="Get offline devices", description="Retrieve all devices that are currently offline.", response_description="A list of offline devices.")
 async def get_offline_devices( # Original name is fine as it's distinct in API
     service: DeviceService = Depends(get_device_service), # Inject service
-    limit: int = Query(100, le=500),
-    offset: int = Query(0, ge=0)
+    limit: int = Query(100, le=500, description="Maximum number of devices to return"),
+    offset: int = Query(0, ge=0, description="Offset for pagination")
 ):
     """Get all offline devices"""
     devices_db = service.get_offline_devices_list(limit=limit, offset=offset)

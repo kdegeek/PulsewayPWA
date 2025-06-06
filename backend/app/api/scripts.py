@@ -66,7 +66,7 @@ def get_db():
 def get_pulseway_client(request: Request) -> PulsewayClient:
     return request.app.state.pulseway_client
 
-@router.get("/", response_model=List[ScriptSummary])
+@router.get("/", response_model=List[ScriptSummary], summary="List all scripts", description="Retrieve a list of all available scripts, with optional filtering.", response_description="A list of scripts.")
 async def get_scripts(
     db: Session = Depends(get_db),
     platform: Optional[str] = Query(None, description="Filter by platform (Windows, Linux, Mac OS)"),
@@ -74,8 +74,8 @@ async def get_scripts(
     built_in_only: Optional[bool] = Query(None, description="Show only built-in scripts"),
     custom_only: Optional[bool] = Query(None, description="Show only custom scripts"),
     search: Optional[str] = Query(None, description="Search in script name or description"),
-    limit: int = Query(100, le=500),
-    offset: int = Query(0, ge=0)
+    limit: int = Query(100, le=500, description="Maximum number of scripts to return"),
+    offset: int = Query(0, ge=0, description="Offset for pagination")
 ):
     """Get list of scripts with optional filtering"""
     
@@ -117,7 +117,7 @@ async def get_scripts(
     scripts = query.offset(offset).limit(limit).all()
     return scripts
 
-@router.get("/{script_id}", response_model=ScriptDetail)
+@router.get("/{script_id}", response_model=ScriptDetail, summary="Get script details", description="Retrieve detailed information about a specific script by its ID.", response_description="Detailed information about the script.")
 async def get_script(
     script_id: str, 
     db: Session = Depends(get_db),
@@ -172,7 +172,7 @@ async def get_script(
 
     return script
 
-@router.post("/{script_id}/execute", response_model=ScriptExecutionResponse)
+@router.post("/{script_id}/execute", response_model=ScriptExecutionResponse, summary="Execute script", description="Execute a script on a specific device.", response_description="Status of the script execution request.")
 async def execute_script(
     script_id: str,
     execution_request: ScriptExecution,
@@ -222,13 +222,13 @@ async def execute_script(
         # logger.error(f"Unexpected error during script execution for {script_id} on {execution_request.device_identifier}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Script execution failed unexpectedly: {str(e)}")
 
-@router.get("/{script_id}/executions/{device_id}")
+@router.get("/{script_id}/executions/{device_id}", summary="Get script executions for a device", description="Retrieve execution history for a script on a specific device.", response_description="List of script executions.")
 async def get_script_executions(
     script_id: str,
     device_id: str,
     pulseway_client: PulsewayClient = Depends(get_pulseway_client),
-    limit: int = Query(20, le=100),
-    offset: int = Query(0, ge=0)
+    limit: int = Query(20, le=100, description="Maximum number of executions to return"),
+    offset: int = Query(0, ge=0, description="Offset for pagination")
 ):
     """Get execution history for a script on a specific device"""
     
@@ -256,7 +256,7 @@ async def get_script_executions(
         # logger.error(f"Unexpected error getting executions for script {script_id} on {device_id}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to get script executions unexpectedly: {str(e)}")
 
-@router.get("/{script_id}/executions/{device_id}/{execution_id}", response_model=ScriptExecutionDetail)
+@router.get("/{script_id}/executions/{device_id}/{execution_id}", response_model=ScriptExecutionDetail, summary="Get script execution details", description="Retrieve detailed information about a specific script execution.", response_description="Detailed information about the script execution.")
 async def get_script_execution_details(
     script_id: str,
     device_id: str,
@@ -315,7 +315,7 @@ async def get_script_execution_details(
         # logger.error(f"Unexpected error getting execution details for script {script_id}, device {device_id}, exec {execution_id}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to get script execution details unexpectedly: {str(e)}")
 
-@router.get("/categories/list")
+@router.get("/categories/list", summary="List script categories", description="Retrieve a list of all script categories.", response_description="A list of script categories.")
 async def get_script_categories(db: Session = Depends(get_db)):
     """Get list of script categories"""
     
@@ -325,7 +325,7 @@ async def get_script_categories(db: Session = Depends(get_db)):
     
     return {"categories": [cat[0] for cat in categories if cat[0]]}
 
-@router.get("/platforms/list")
+@router.get("/platforms/list", summary="List script platforms", description="Retrieve a list of supported script platforms.", response_description="A list of script platforms.")
 async def get_script_platforms(db: Session = Depends(get_db)):
     """Get list of supported platforms"""
     
@@ -334,7 +334,7 @@ async def get_script_platforms(db: Session = Depends(get_db)):
         "platforms": ["Windows", "Linux", "Mac OS"]
     }
 
-@router.post("/bulk-execute")
+@router.post("/bulk-execute", summary="Bulk execute script", description="Execute a script on multiple devices simultaneously.", response_description="Results of the bulk script execution.")
 async def bulk_execute_script(
     script_id: str = Body(...),
     device_identifiers: List[str] = Body(...),
@@ -418,11 +418,11 @@ async def bulk_execute_script(
         "total_failed": len(failed_executions)
     }
 
-@router.get("/search/{search_term}")
+@router.get("/search/{search_term}", summary="Search scripts", description="Search for scripts by name or description.", response_description="A list of scripts matching the search term.")
 async def search_scripts(
     search_term: str,
     db: Session = Depends(get_db),
-    limit: int = Query(20, le=100)
+    limit: int = Query(20, le=100, description="Maximum number of scripts to return")
 ):
     """Search scripts by name or description"""
     

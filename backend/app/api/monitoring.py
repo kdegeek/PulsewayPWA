@@ -72,7 +72,7 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/dashboard", response_model=DashboardSummary)
+@router.get("/dashboard", response_model=DashboardSummary, summary="Get dashboard summary", description="Retrieve main dashboard summary statistics.", response_description="Dashboard summary statistics.")
 async def get_dashboard_summary(db: Session = Depends(get_db)):
     """Get main dashboard summary statistics"""
     
@@ -105,7 +105,7 @@ async def get_dashboard_summary(db: Session = Depends(get_db)):
         last_updated=last_device_update or datetime.now()
     )
 
-@router.get("/alerts", response_model=AlertSummary)
+@router.get("/alerts", response_model=AlertSummary, summary="Get alert summary", description="Retrieve a summary of all alerts across the system.", response_description="Alert summary.")
 async def get_alert_summary(db: Session = Depends(get_db)):
     """Get summary of all alerts across the system"""
     
@@ -129,7 +129,7 @@ async def get_alert_summary(db: Session = Depends(get_db)):
         devices_with_elevated=devices_with_elevated
     )
 
-@router.get("/health", response_model=SystemHealth)
+@router.get("/health", response_model=SystemHealth, summary="Get system health", description="Retrieve overall system health metrics.", response_description="System health metrics.")
 async def get_system_health(db: Session = Depends(get_db)):
     """Get overall system health metrics"""
     
@@ -188,11 +188,11 @@ async def get_system_health(db: Session = Depends(get_db)):
         }
     )
 
-@router.get("/activity/recent", response_model=List[RecentActivity])
+@router.get("/activity/recent", response_model=List[RecentActivity], summary="Get recent activity", description="Retrieve recent system activity and notifications.", response_description="List of recent activities.")
 async def get_recent_activity(
     db: Session = Depends(get_db),
-    limit: int = Query(50, le=200),
-    priority_filter: Optional[str] = Query(None, description="Filter by priority (critical, elevated, normal, low)")
+    limit: int = Query(50, le=200, description="Maximum number of activities to return"),
+    priority_filter: Optional[str] = Query(None, description="Filter activities by priority (critical, elevated, normal, low)")
 ):
     """Get recent system activity and notifications"""
     
@@ -222,7 +222,7 @@ async def get_recent_activity(
     
     return activity
 
-@router.get("/locations/organizations", response_model=List[LocationStats])
+@router.get("/locations/organizations", response_model=List[LocationStats], summary="Get organization statistics", description="Retrieve statistics grouped by organization.", response_description="List of organization statistics.")
 async def get_organization_stats(db: Session = Depends(get_db)):
     """Get statistics by organization"""
     
@@ -250,7 +250,7 @@ async def get_organization_stats(db: Session = Depends(get_db)):
     
     return sorted(stats, key=lambda x: x.total_devices, reverse=True)
 
-@router.get("/locations/sites", response_model=List[LocationStats])
+@router.get("/locations/sites", response_model=List[LocationStats], summary="Get site statistics", description="Retrieve statistics grouped by site.", response_description="List of site statistics.")
 async def get_site_stats(db: Session = Depends(get_db)):
     """Get statistics by site"""
     
@@ -278,7 +278,7 @@ async def get_site_stats(db: Session = Depends(get_db)):
     
     return sorted(stats, key=lambda x: x.total_devices, reverse=True)
 
-@router.get("/performance", response_model=PerformanceMetrics)
+@router.get("/performance", response_model=PerformanceMetrics, summary="Get performance metrics", description="Retrieve system performance metrics.", response_description="System performance metrics.")
 async def get_performance_metrics(db: Session = Depends(get_db)):
     """Get system performance metrics"""
     
@@ -315,10 +315,10 @@ async def get_performance_metrics(db: Session = Depends(get_db)):
         low_disk_space_devices=low_disk_space_devices
     )
 
-@router.get("/trends/hourly")
+@router.get("/trends/hourly", summary="Get hourly trends", description="Retrieve hourly trends for devices and alerts.", response_description="Hourly trend data.")
 async def get_hourly_trends(
     db: Session = Depends(get_db),
-    hours: int = Query(24, le=168, description="Number of hours to look back")
+    hours: int = Query(24, le=168, description="Number of hours to look back for trends")
 ):
     """Get hourly trends for devices and alerts"""
     
@@ -346,11 +346,11 @@ async def get_hourly_trends(
     
     return {"trends": hourly_data}
 
-@router.get("/notifications/unread")
+@router.get("/notifications/unread", summary="Get unread notifications", description="Retrieve unread notifications.", response_description="List of unread notifications.")
 async def get_unread_notifications(
     db: Session = Depends(get_db),
-    limit: int = Query(50, le=200),
-    priority_filter: Optional[str] = Query(None)
+    limit: int = Query(50, le=200, description="Maximum number of notifications to return"),
+    priority_filter: Optional[str] = Query(None, description="Filter notifications by priority")
 ):
     """Get unread notifications"""
     
@@ -363,7 +363,7 @@ async def get_unread_notifications(
     
     return notifications
 
-@router.post("/notifications/{notification_id}/mark-read")
+@router.post("/notifications/{notification_id}/mark-read", summary="Mark notification as read", description="Mark a specific notification as read.", response_description="Status of the operation.")
 async def mark_notification_read(notification_id: int, db: Session = Depends(get_db)):
     """Mark a notification as read"""
     
@@ -377,7 +377,7 @@ async def mark_notification_read(notification_id: int, db: Session = Depends(get
     
     return {"status": "success", "message": "Notification marked as read"}
 
-@router.post("/notifications/mark-all-read")
+@router.post("/notifications/mark-all-read", summary="Mark all notifications as read", description="Mark all notifications as read.", response_description="Status of the operation.")
 async def mark_all_notifications_read(db: Session = Depends(get_db)):
     """Mark all notifications as read"""
     

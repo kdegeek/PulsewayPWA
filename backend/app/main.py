@@ -193,9 +193,9 @@ app.add_middleware(
 )
 
 # Include API routers
-app.include_router(devices.router, prefix="/api/devices", tags=["devices"])
-app.include_router(scripts.router, prefix="/api/scripts", tags=["scripts"])
-app.include_router(monitoring.router, prefix="/api/monitoring", tags=["monitoring"])
+app.include_router(devices.router, prefix="/api/v1/devices", tags=["devices"])
+app.include_router(scripts.router, prefix="/api/v1/scripts", tags=["scripts"])
+app.include_router(monitoring.router, prefix="/api/v1/monitoring", tags=["monitoring"])
 
 @app.get("/")
 async def root():
