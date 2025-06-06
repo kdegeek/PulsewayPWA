@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  pulseway-backend:
+    build: .
+    container_name: pulseway-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PULSEWAY_TOKEN_ID=${PULSEWAY_TOKEN_ID}
+      - PULSEWAY_TOKEN_SECRET=${PULSEWAY_TOKEN_SECRET}
+      - PULSEWAY_BASE_URL=${PULSEWAY_BASE_URL:-https://api.pulseway.com/v3/}
+      - DATABASE_URL=sqlite:///./data/pulseway.db
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - pulseway_data:/app/data
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  pulseway_data:
+    driver: local
