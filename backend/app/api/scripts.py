@@ -168,9 +168,7 @@ async def get_script(
     # If script was found locally, it's returned here.
     # If not found locally, and Pulseway calls above didn't return or raised HTTPException,
     # this means it wasn't found anywhere.
-    if not script: # This check is redundant if the above logic correctly raises or returns.
-                   # However, keeping it as a safeguard if API returns weirdly without exception.
-        raise HTTPException(status_code=404, detail="Script not found.")
+# Removed redundant `if not script` branch as it is unreachable.
 
     return script
 
